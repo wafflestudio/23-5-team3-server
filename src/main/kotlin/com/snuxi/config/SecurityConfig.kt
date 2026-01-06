@@ -28,6 +28,11 @@ class SecurityConfig(
                 }
                 it.defaultSuccessUrl("/", true)
             }
+            .logout {
+                it.logoutSuccessUrl("/")
+                it.logoutUrl("/logout")
+                it.invalidateHttpSession(true)
+            }
         return http.build()
     }
 
