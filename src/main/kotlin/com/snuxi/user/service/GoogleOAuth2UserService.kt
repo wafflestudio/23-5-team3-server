@@ -55,7 +55,7 @@ class GoogleOAuth2UserService(
         return userRepository.save(
             User(
                 email = email,
-                nickname = name,
+                username = name,
                 profileImageUrl = picture
             )
         )
