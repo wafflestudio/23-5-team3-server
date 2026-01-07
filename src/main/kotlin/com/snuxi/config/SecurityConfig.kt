@@ -22,6 +22,7 @@ class SecurityConfig(
                 it.anyRequest().authenticated()
             }
             .oauth2Login {
+                it.loginPage("/login")
                 it.userInfoEndpoint {
                     endpoint ->
                         endpoint.userService(googleOAuth2UserService)
