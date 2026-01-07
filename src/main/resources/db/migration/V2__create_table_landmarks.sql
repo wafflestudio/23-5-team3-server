@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS landmarks
+(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    landmark_name VARCHAR(16) NOT NULL,
+    latitude DECIMAL(3, 5) NOT NULL,
+    longitude DECIMAL(3, 5) NOT NULL
+);
