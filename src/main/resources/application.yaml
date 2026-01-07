@@ -1,3 +1,16 @@
 spring:
   application:
     name: snuxi
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: # "아이디 적는곳"
+            client-secret: # "비밀번호 적는곳"
+            scope:
+              - email
+              - profile
+            redirect-uri: "http://localhost:8080/login/oauth2/code/google"
+            authorization-grant-type: authorization_code
+            client-name: Google
