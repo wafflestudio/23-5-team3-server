@@ -38,3 +38,7 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+###xml
+*.xml
+repomix-output.*
