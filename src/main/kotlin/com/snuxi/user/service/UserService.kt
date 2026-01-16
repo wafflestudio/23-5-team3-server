@@ -1,5 +1,6 @@
 package com.snuxi.user.service
 
+import com.snuxi.user.UserNotFoundException
 import com.snuxi.user.dto.UserResponse
 import com.snuxi.user.repository.UserRepository
 import org.springframework.stereotype.Service
@@ -12,7 +13,7 @@ class UserService(
 ) {
     fun getProfile(email: String): UserResponse {
         val user = userRepository.findByEmail(email)
-            ?: throw IllegalStateException("User not found")
+            ?: throw UserNotFoundException()
 
         return UserResponse(user)
     }
