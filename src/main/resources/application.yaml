@@ -1,6 +1,7 @@
 spring:
   application:
     name: snuxi
+
   security:
     oauth2:
       client:
@@ -8,20 +9,13 @@ spring:
           google:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
-            scope:
-              - email
-              - profile
+            scope: [email, profile]
             redirect-uri: "http://${SERVER_IP}.nip.io:8080/login/oauth2/code/google"
             authorization-grant-type: authorization_code
             client-name: Google
+
   cloud:
     aws:
-      # 로컬 테스트용 코드, EC2 설정 후 삭제 필요, EC2 조회를 꺼둔 상태
-      #      stack:
-      #        auto: false
-      #      imds:
-      #        enabled: false
-      ###
       region:
         static: ap-northeast-2
       credentials:
@@ -29,14 +23,14 @@ spring:
         secret-key: ${AWS_SECRET_ACCESS_KEY:}
       s3:
         bucket: snuxi-dev-assets
-#h2 콘솔 활성화 코드, h2 바탕으로 일단 테스트용 - 차후 지우시면 됩니다
-    h2:
-      console:
-        enabled: true
-        path: /h2-console
-    datasource:
-      url: jdbc:h2:mem:testdb
-      driver-class-name: org.h2.Driver
-      username: sa
-      password: ""
-  ###
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
