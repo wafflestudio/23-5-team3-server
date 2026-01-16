@@ -17,10 +17,10 @@ spring:
   cloud:
     aws:
       # 로컬 테스트용 코드, EC2 설정 후 삭제 필요, EC2 조회를 꺼둔 상태
-      stack:
-        auto: false
-      imds:
-        enabled: false
+#      stack:
+#        auto: false
+#      imds:
+#        enabled: false
       ###
       region:
         static: ap-northeast-2
