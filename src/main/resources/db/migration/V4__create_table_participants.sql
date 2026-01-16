@@ -8,5 +8,5 @@ CREATE TABLE IF NOT EXISTS participants
     CONSTRAINT __participants_fk_user_id FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT __participants_fk_pot_id FOREIGN KEY (pot_id) REFERENCES pots (id) ON DELETE CASCADE,
 
-    UNIQUE KEY __participants_uk (user_id)
+    CONSTRAINT __participants_uk UNIQUE (user_id)
 );

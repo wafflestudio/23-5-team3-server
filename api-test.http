@@ -1,0 +1,30 @@
+### 1. 택시팟 생성 (테스트를 위한 준비)
+POST http://localhost:8080/room
+Content-Type: application/json
+CERTIFIED_USER_ID: 1
+
+{
+  "ownerId": 1,
+  "departureId": 1,
+  "destinationId": 6,
+  "departureTime": "2026-01-20T10:00:00",
+  "minCapacity": 2,
+  "maxCapacity": 4
+}
+
+### 2. 팟 검색 (유리님 담당)
+GET http://localhost:8080/rooms/search?departureId=1&destinationId=6
+Accept: application/json
+
+### 3. 팟 참여 (유리님 담당)
+# 위 1번에서 생성된 ID가 1이라고 가정합니다.
+POST http://localhost:8080/rooms/1/join
+CERTIFIED_USER_ID: 2
+
+### 4. 내 참여 정보 조회 (유리님 담당)
+GET http://localhost:8080/users/me/pot
+CERTIFIED_USER_ID: 2
+
+### 5. 팟 나가기 (유리님 담당)
+POST http://localhost:8080/rooms/1/leave
+CERTIFIED_USER_ID: 2
