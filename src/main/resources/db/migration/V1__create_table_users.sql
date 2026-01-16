@@ -9,3 +9,6 @@ CREATE TABLE IF NOT EXISTS users
     updated_at TIMESTAMP(6),
     active_pot_id BIGINT
 );
+
+INSERT INTO users (email, username, profile_image_url, role, created_at, updated_at, active_pot_id) VALUES
+('abcd@snu.ac.kr', 'abcduser', 'http', 'USER', CURRENT_TIMESTAMP(6), CURRENT_TIMESTAMP(6), 1);

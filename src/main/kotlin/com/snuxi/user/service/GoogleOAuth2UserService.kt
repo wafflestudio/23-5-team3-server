@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException
 import org.springframework.security.oauth2.core.OAuth2Error
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User
+import com.snuxi.security.CustomOAuth2User
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 import java.util.Collections
@@ -31,12 +31,16 @@ class GoogleOAuth2UserService(
         }
 
         val user = getOrSave(attributes)
-        val userNameAttributeName = userRequest.clientRegistration.providerDetails.userInfoEndpoint.userNameAttributeName
+        val userNameAttributeName =
+            userRequest.clientRegistration.providerDetails.userInfoEndpoint.userNameAttributeName
 
-        return DefaultOAuth2User(
-            Collections.singleton(SimpleGrantedAuthority("ROLE_${user.role.name}")),
-            attributes,
-            userNameAttributeName
+        val authorities = Collections.singleton(SimpleGrantedAuthority("ROLE_${user.role.name}"))
+
+        return CustomOAuth2User(
+            userId = user.id!!,              // 너가 Long 맞다고 했으니 OK (null이면 저장 로직 점검)
+            authorities = authorities,
+            attributes = attributes,
+            nameAttributeKey = userNameAttributeName
         )
     }
 
