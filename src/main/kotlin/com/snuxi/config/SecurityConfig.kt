@@ -17,8 +17,9 @@ class SecurityConfig(
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .csrf { it.disable() }
+            .headers { it.frameOptions { frameOptions -> frameOptions.sameOrigin() } }
             .authorizeHttpRequests {
-                it.requestMatchers("/", "/login").permitAll()
+                it.requestMatchers("/", "/login", "/h2-console/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .oauth2Login {
