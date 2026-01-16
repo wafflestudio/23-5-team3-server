@@ -48,7 +48,7 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	runtimeOnly("com.mysql:mysql-connector-j")
-
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 }
 
 
