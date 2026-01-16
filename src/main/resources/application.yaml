@@ -24,13 +24,11 @@ spring:
       s3:
         bucket: snuxi-dev-assets
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
-
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: ""
+    url: jdbc:mysql://127.0.0.1:3306/snuxi?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=utf8mb4
+    username: ${DB_USER:snuxi}
+    password: ${DB_PASSWORD:snuxi_pw}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+

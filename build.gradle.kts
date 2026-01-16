@@ -45,7 +45,11 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")}
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	runtimeOnly("com.mysql:mysql-connector-j")
+
+}
 
 
 

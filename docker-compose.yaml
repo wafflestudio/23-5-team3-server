@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: snuxi-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: snuxi
+      MYSQL_USER: snuxi
+      MYSQL_PASSWORD: snuxi_pw
+      MYSQL_ROOT_PASSWORD: rootpw
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
