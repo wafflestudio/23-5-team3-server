@@ -3,6 +3,8 @@ package com.snuxi.pot.controller
 import com.snuxi.pot.dto.CreatePotRequest
 import com.snuxi.pot.dto.CreatePotResponse
 import com.snuxi.pot.service.PotService
+import com.snuxi.pot.entity.Pots
+import com.snuxi.pot.dto.PotDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -36,4 +38,41 @@ class PotController (
         potService.deletePot(userId, roomId)
         return ResponseEntity.noContent().build()
     }
+
+    @PostMapping("/rooms/{roomId}/join")
+    fun join(
+        @RequestHeader("CERTIFIED_USER_ID") userId: Long,
+        @PathVariable roomId: Long
+    ): ResponseEntity<Void> {
+        potService.joinPot(userId, roomId)
+        return ResponseEntity.ok().build()
+    }
+
+    @PostMapping("/rooms/{roomId}/leave")
+    fun leave(
+        @RequestHeader("CERTIFIED_USER_ID") userId: Long,
+        @PathVariable roomId: Long
+    ): ResponseEntity<Void> {
+        potService.leavePot(userId, roomId)
+        return ResponseEntity.ok().build()
+    }
+
+    @GetMapping("/rooms/search")
+    fun search(
+        @RequestParam departureId: Long,
+        @RequestParam destinationId: Long
+    ): List<PotDto> {
+        return potService.searchPots(departureId, destinationId)
+    }
+
+    @GetMapping("/users/me/pot")
+    fun getMyPot(
+        @RequestHeader("CERTIFIED_USER_ID") userId: Long
+    ): PotDto? {
+        return potService.getMyPot(userId)
+    }
+
+
+
+
 }

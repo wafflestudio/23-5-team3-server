@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS pots
 
     CONSTRAINT pot__fk_owner_id FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE,
     CONSTRAINT pot__fk_departure_id FOREIGN KEY (departure_id) REFERENCES landmarks (id) ON DELETE CASCADE,
-    CONSTRAINT pot__fk_destination_id FOREIGN KEY (departure_id) REFERENCES landmarks (id) ON DELETE CASCADE
+    CONSTRAINT pot__fk_destination_id FOREIGN KEY (destination_id) REFERENCES landmarks (id) ON DELETE CASCADE
 );

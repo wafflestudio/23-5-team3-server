@@ -2,11 +2,12 @@ package com.snuxi
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration // 이 줄 추가
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
 
-//DB연결 미루고 s3 테스트 용. 나중에 exclude 부분 지워야함
-@SpringBootApplication()
+//exclude = 테스트 용. 개발 후 삭제 필요
+@SpringBootApplication(exclude = [SecurityAutoConfiguration::class, RedisAutoConfiguration::class, OAuth2ClientAutoConfiguration::class])
 class SnuxiApplication
 
 fun main(args: Array<String>) {
