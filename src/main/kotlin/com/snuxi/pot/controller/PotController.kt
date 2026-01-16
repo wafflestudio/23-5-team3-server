@@ -24,14 +24,13 @@ class PotController (
         @AuthenticationPrincipal principal: CustomOAuth2User,
         @RequestBody createPotRequest: CreatePotRequest
     ): ResponseEntity<CreatePotResponse> {
-        val ownerId = createPotRequest.ownerId
         val departureId = createPotRequest.departureId
         val destinationId = createPotRequest.destinationId
         val departureTime = createPotRequest.departureTime
         val minCapacity = createPotRequest.minCapacity
         val maxCapacity = createPotRequest.maxCapacity
 
-        val response = potService.createPot(principal.userId, ownerId, departureId, destinationId, departureTime, minCapacity, maxCapacity)
+        val response = potService.createPot(principal.userId, departureId, destinationId, departureTime, minCapacity, maxCapacity)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
