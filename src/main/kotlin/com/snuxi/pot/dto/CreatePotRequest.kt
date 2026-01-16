@@ -8,5 +8,6 @@ data class CreatePotRequest (
     val destinationId: Long,
     val departureTime: LocalDateTime,
     val minCapacity: Int,
-    val maxCapacity: Int
+    val maxCapacity: Int,
+    val estimatedFee: Int
 )

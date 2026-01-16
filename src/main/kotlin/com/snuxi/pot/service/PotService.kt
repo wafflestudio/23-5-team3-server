@@ -13,6 +13,8 @@ import com.snuxi.pot.dto.CreatePotResponse
 import com.snuxi.pot.dto.PotDto
 import com.snuxi.pot.entity.Pots
 import com.snuxi.pot.repository.PotRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -46,6 +48,7 @@ class PotService (
                 minCapacity = minCapacity,
                 maxCapacity = maxCapacity,
                 currentCount = 1,
+                estimatedFee = 0,
                 status = PotStatus.RECRUITING
             )
         )
@@ -109,11 +112,13 @@ class PotService (
     fun searchPots(
         departureId: Long,
         destinationId: Long,
-    ): List<PotDto> {
+        pageable: Pageable
+    ): Page<PotDto> {
         return potRepository.findAllByDepartureIdAndDestinationIdAndStatusOrderByDepartureTimeAsc(
             departureId,
             destinationId,
-            PotStatus.RECRUITING
+            PotStatus.RECRUITING,
+            pageable
         ).map {PotDto.from(it)}
     }
 

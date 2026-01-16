@@ -13,6 +13,7 @@ data class PotDto(
     val minCapacity: Int,
     val maxCapacity: Int,
     val currentCount: Int,
+    val estimatedFee: Int,
     val status: PotStatus
 ) {
     companion object {
@@ -25,6 +26,7 @@ data class PotDto(
             minCapacity = entity.minCapacity,
             maxCapacity = entity.maxCapacity,
             currentCount = entity.currentCount,
+            estimatedFee = entity.estimatedFee,
             status = entity.status
         )
     }

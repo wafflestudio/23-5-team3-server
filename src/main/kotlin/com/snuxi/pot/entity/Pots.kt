@@ -24,7 +24,9 @@ class Pots (
     @Column(name = "min_capacity") var minCapacity: Int,
     @Column(name = "max_capacity") var maxCapacity: Int,
     @Column(name = "current_count") var currentCount: Int,
+    @Column(name = "estimated_fee") var estimatedFee: Int,
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    var status: PotStatus
+    var status: PotStatus,
+
 )

@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS pots
     min_capacity TINYINT NOT NULL,
     max_capacity TINYINT NOT NULL,
     current_count TINYINT NOT NULL,
+    estimated_fee INT NOT NULL,
     status VARCHAR(16) NOT NULL,
 
     CONSTRAINT pot__fk_owner_id FOREIGN KEY (owner_id) REFERENCES users (id) ON DELETE CASCADE,
