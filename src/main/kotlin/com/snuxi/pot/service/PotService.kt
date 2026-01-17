@@ -56,17 +56,23 @@ class PotService (
             )
         )
 
-        return CreatePotResponse(
-            createdPotId = save.id!!
-        )
+        userRepository.updateActivePotIdForUsers(listOf(userId), save.id)
+
+        return CreatePotResponse(createdPotId = save.id!!)
     }
 
     @Transactional
-    fun deletePot(
-        userId: Long,
-        potId: Long
-    ) {
+    fun deletePot(userId: Long, potId: Long) {
+        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+        if(pot.ownerId != userId) throw NotPotOwnerException()
 
+        val users = participantRepository.findUserIdsByPotId(potId)
+        if(users.isNotEmpty()){
+            userRepository.updateActivePotIdForUsers(users, null)
+        }
+
+        participantRepository.deleteAllByPotId(potId)
+        potRepository.deleteById(potId)
     }
 
     @Transactional
@@ -84,7 +90,13 @@ class PotService (
             )
         )
 
+        userRepository.updateActivePotIdForUsers(listOf(userId), potId)
         pot.currentCount += 1
+
+        // 인원이 가득 찬 경우에 SUCCESS로 상태 변경
+        if (pot.currentCount >= pot.maxCapacity) {
+            pot.status = PotStatus.SUCCESS
+        }
     }
 
     @Transactional
@@ -92,6 +104,7 @@ class PotService (
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
         if (!participantRepository.existsByUserId(userId)) throw NotParticipatingException()
 
+        userRepository.updateActivePotIdForUsers(listOf(userId), null)
         participantRepository.deleteByUserIdAndPotId(userId, potId)
 
         if (pot.currentCount > 0) {
@@ -110,17 +123,10 @@ class PotService (
     }
 
     @Transactional(readOnly = true)
-    fun searchPots(
-        departureId: Long,
-        destinationId: Long,
-        pageable: Pageable
-    ): Page<PotDto> {
+    fun searchPots(departureId: Long, destinationId: Long, pageable: Pageable): Page<PotDto> {
         return potRepository.findAllByDepartureIdAndDestinationIdAndStatusOrderByDepartureTimeAsc(
-            departureId,
-            destinationId,
-            PotStatus.RECRUITING,
-            pageable
-        ).map {PotDto.from(it)}
+            departureId, destinationId, PotStatus.RECRUITING, pageable
+        ).map { PotDto.from(it) }
     }
 
     @Transactional(readOnly = true)
@@ -129,5 +135,4 @@ class PotService (
         val pot = potRepository.findByIdOrNull(participation.potId) ?: return null
         return PotDto.from(pot)
     }
-
 }
