@@ -30,5 +30,13 @@ spring:
     password: ${DB_PASSWORD:snuxi_pw}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  server:
+    forward-headers-strategy: framework
+    servlet:
+      session:
+        cookie:
+          same-site: none
+          secure: true
+
 
 

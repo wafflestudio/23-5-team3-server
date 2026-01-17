@@ -1,6 +1,6 @@
 package com.snuxi.pot
 
-import com.snuxi.global.config.DomainException
+import com.snuxi.exception.DomainException
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
 
@@ -58,4 +58,18 @@ class NotPotOwnerException :
         errorCode = 400,
         httpStatusCode = HttpStatus.BAD_REQUEST,
         msg = "해당 팟의 방장이 아닙니다."
+    )
+
+class TemporarilyNotLeavePotException :
+    PotException(
+        errorCode = 400,
+        httpStatusCode = HttpStatus.BAD_REQUEST,
+        msg = "현재 해당 팟에서 나갈 수 없습니다. 잠시 후 다시 시도해주세요"
+    )
+
+class TemporarilyNotJoinPotException :
+    PotException(
+        errorCode = 400,
+        httpStatusCode = HttpStatus.BAD_REQUEST,
+        msg = "현재 해당 팟에 참여할 수 없습니다. 잠시 후 다시 시도해주세요"
     )
