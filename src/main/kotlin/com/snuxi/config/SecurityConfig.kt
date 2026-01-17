@@ -27,10 +27,10 @@ class SecurityConfig(
                     endpoint ->
                         endpoint.userService(googleOAuth2UserService)
                 }
-                it.defaultSuccessUrl("/", true)
+                it.defaultSuccessUrl("/user/profile", true)
             }
             .logout {
-                it.logoutSuccessUrl("/")
+                it.logoutSuccessUrl("/login")
                 it.logoutUrl("/logout")
                 it.invalidateHttpSession(true)
             }
