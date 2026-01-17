@@ -106,7 +106,7 @@ class PotService (
     @Transactional
     fun leavePot(userId: Long, potId: Long) {
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
-        if (!participantRepository.existsByUserId(userId)) throw NotParticipatingException()
+        if (!participantRepository.existsByUserIdAndPotId(userId, potId)) throw NotParticipatingException()
 
         userRepository.updateActivePotIdForUsers(listOf(userId), null)
         participantRepository.deleteByUserIdAndPotId(userId, potId)
