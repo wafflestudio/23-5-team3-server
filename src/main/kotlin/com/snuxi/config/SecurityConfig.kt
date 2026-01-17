@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.security.config.Customizer
 
 @Configuration
 @EnableWebSecurity
@@ -19,6 +20,7 @@ class SecurityConfig(
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .cors ( Customizer.withDefaults() )
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers("/", "/login").permitAll()
