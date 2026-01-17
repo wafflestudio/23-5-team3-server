@@ -56,6 +56,8 @@ class PotService (
             )
         )
 
+        userRepository.updateActivePotIdForUsers(listOf(userId), save.id)
+
         return CreatePotResponse(
             createdPotId = save.id!!
         )
@@ -96,14 +98,20 @@ class PotService (
             )
         )
 
+        userRepository.updateActivePotIdForUsers(listOf(userId), potId)
         pot.currentCount += 1
+
+        if (pot.currentCount >= pot.maxCapacity) {
+            pot.status = PotStatus.SUCCESS
+        }
     }
 
     @Transactional
     fun leavePot(userId: Long, potId: Long) {
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
-
         if (!participantRepository.existsByUserId(userId)) throw NotParticipatingException()
+
+        userRepository.updateActivePotIdForUsers(listOf(userId), null)
 
         participantRepository.deleteByUserIdAndPotId(userId, potId)
 
@@ -111,8 +119,15 @@ class PotService (
             pot.currentCount -= 1
         }
 
-    //TODO 방장(ownerId) 나가는 경우 처리
-
+        if (pot.ownerId == userId) {
+            if (pot.currentCount == 0) {
+                potRepository.delete(pot)
+            } else {
+                participantRepository.findFirstByPotIdOrderByJoinedAtAsc(potId)?.let { nextOwner ->
+                    pot.ownerId = nextOwner.userId
+                }
+            }
+        }
     }
 
     @Transactional(readOnly = true)
