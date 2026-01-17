@@ -69,7 +69,7 @@ class PotService (
         potId: Long
     ) {
         // 1. 이 사람이 방장이 아니면 error
-        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+        val pot = potRepository.findByOwnerId(userId) ?: throw PotNotFoundException()
         if(pot.ownerId != userId) throw NotPotOwnerException()
 
         // 해당 방에 소속된 모든 유저들의 active pot id를 초기화하기 위함
