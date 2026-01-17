@@ -20,4 +20,5 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
         potId: Long
     ): List<Long>
 
+    fun findFirstByPotIdOrderByJoinedAtAsc(potId: Long): Participants?
 }
