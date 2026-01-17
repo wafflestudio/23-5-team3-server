@@ -2,17 +2,12 @@ package com.snuxi.pot.service
 
 import com.snuxi.participant.entity.Participants
 import com.snuxi.participant.repository.ParticipantRepository
-import com.snuxi.pot.DuplicateParticipationException
-import com.snuxi.pot.InvalidCountException
-import com.snuxi.pot.MinMaxReversedException
-import com.snuxi.pot.NotParticipatingException
-import com.snuxi.pot.PotFullException
-import com.snuxi.pot.PotNotFoundException
-import com.snuxi.pot.PotStatus
+import com.snuxi.pot.*
 import com.snuxi.pot.dto.CreatePotResponse
 import com.snuxi.pot.dto.PotDto
 import com.snuxi.pot.entity.Pots
 import com.snuxi.pot.repository.PotRepository
+import com.snuxi.user.repository.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -23,7 +18,8 @@ import java.time.LocalDateTime
 @Service
 class PotService (
     private val potRepository: PotRepository,
-    private val participantRepository: ParticipantRepository
+    private val participantRepository: ParticipantRepository,
+    private val userRepository: UserRepository
 ) {
     @Transactional
     fun createPot(
@@ -70,7 +66,19 @@ class PotService (
         userId: Long,
         potId: Long
     ) {
-
+        // 1. 이 사람이 방장이 아니면 error
+        val pot = potRepository.findByOwnerId(userId) ?: throw PotNotFoundException()
+        if(pot.ownerId != userId) throw NotPotOwnerException()
+        
+        // 해당 방에 소속된 모든 유저들의 active pot id를 초기화하기 위함
+        val users = participantRepository.findUserIdsByPotId(potId) // List<Long>
+        if(users.isNotEmpty()){
+            userRepository.updateActivePotIdForUsers(users, null)
+        }
+        
+        // 2. 방장이면 방 삭제
+        participantRepository.deleteAllByPotId(potId)
+        potRepository.deleteById(potId)
     }
 
     @Transactional

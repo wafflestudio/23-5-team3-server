@@ -13,4 +13,8 @@ interface PotRepository : JpaRepository<Pots, Long> {
         status: PotStatus,
         pageable: Pageable
     ): Page<Pots>
+
+    fun findByOwnerId(
+        ownerId: Long,
+    ): Pots?
 }

@@ -52,3 +52,10 @@ class NotParticipatingException :
         httpStatusCode = HttpStatus.BAD_REQUEST,
         msg = "참여 중인 팟이 아닙니다."
     )
+
+class NotPotOwnerException :
+    PotException(
+        errorCode = 400,
+        httpStatusCode = HttpStatus.BAD_REQUEST,
+        msg = "해당 팟의 방장이 아닙니다."
+    )
