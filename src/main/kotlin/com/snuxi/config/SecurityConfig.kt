@@ -1,6 +1,7 @@
 package com.snuxi.config
 
 import com.snuxi.user.service.GoogleOAuth2UserService
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -47,6 +48,11 @@ class SecurityConfig(
                 it.logoutSuccessUrl("/login")
                 it.logoutUrl("/logout")
                 it.invalidateHttpSession(true)
+            }
+            .exceptionHandling {
+                it.authenticationEntryPoint { _, response, _ ->
+                    response.sendError(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+                }
             }
         return http.build()
     }
