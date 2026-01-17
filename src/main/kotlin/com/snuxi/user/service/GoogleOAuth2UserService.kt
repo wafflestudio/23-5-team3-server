@@ -37,7 +37,7 @@ class GoogleOAuth2UserService(
         val authorities = Collections.singleton(SimpleGrantedAuthority("ROLE_${user.role.name}"))
 
         return CustomOAuth2User(
-            userId = user.id!!,              // 너가 Long 맞다고 했으니 OK (null이면 저장 로직 점검)
+            userId = requireNotNull(user.id) { "DB 저장 후 유저 ID를 생성하지 못했습니다." },
             authorities = authorities,
             attributes = attributes,
             nameAttributeKey = userNameAttributeName

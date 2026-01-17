@@ -1,8 +1,8 @@
 package com.snuxi.user
 
-import com.snuxi.DomainException
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
+import com.snuxi.global.config.DomainException
 
 sealed class UserException(
     errorCode: Int,
