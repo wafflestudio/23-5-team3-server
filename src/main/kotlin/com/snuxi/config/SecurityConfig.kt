@@ -1,7 +1,6 @@
 package com.snuxi.config
 
 import com.snuxi.user.service.GoogleOAuth2UserService
-import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -16,10 +15,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    val googleOAuth2UserService: GoogleOAuth2UserService
+    val googleOAuth2UserService: GoogleOAuth2UserService,
+    val httpCookieOAuth2AuthorizationRequestRepository: HttpCookieOAuth2AuthorizationRequestRepository,
+    val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler
 ) {
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    fun filterChain(
+        http: HttpSecurity,
+    ): SecurityFilterChain {
         http
             .cors ( Customizer.withDefaults() )
             .csrf { it.disable() }
@@ -37,11 +40,14 @@ class SecurityConfig(
             }
             .oauth2Login {
                 it.loginPage("/login")
+                it.authorizationEndpoint { endpoint ->
+                    endpoint.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+                }
                 it.userInfoEndpoint {
                     endpoint ->
                         endpoint.userService(googleOAuth2UserService)
                 }
-                it.defaultSuccessUrl("/user/profile", true)
+                it.successHandler(oAuth2AuthenticationSuccessHandler)
             }
             .logout {
                 it.logoutRequestMatcher(AntPathRequestMatcher("/logout"))
