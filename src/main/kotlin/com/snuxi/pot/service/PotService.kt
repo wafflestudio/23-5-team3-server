@@ -58,19 +58,27 @@ class PotService (
 
         userRepository.updateActivePotIdForUsers(listOf(userId), save.id)
 
-        return CreatePotResponse(createdPotId = save.id!!)
+        return CreatePotResponse(
+            createdPotId = save.id!!
+        )
     }
 
     @Transactional
-    fun deletePot(userId: Long, potId: Long) {
+    fun deletePot(
+        userId: Long,
+        potId: Long
+    ) {
+        // 1. 이 사람이 방장이 아니면 error
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
         if(pot.ownerId != userId) throw NotPotOwnerException()
 
+        // 해당 방에 소속된 모든 유저들의 active pot id를 초기화하기 위함
         val users = participantRepository.findUserIdsByPotId(potId)
         if(users.isNotEmpty()){
             userRepository.updateActivePotIdForUsers(users, null)
         }
 
+        // 2. 방장이면 방 삭제
         participantRepository.deleteAllByPotId(potId)
         potRepository.deleteById(potId)
     }
@@ -92,11 +100,7 @@ class PotService (
 
         userRepository.updateActivePotIdForUsers(listOf(userId), potId)
         pot.currentCount += 1
-
-        // 인원이 가득 찬 경우에 SUCCESS로 상태 변경
-        if (pot.currentCount >= pot.maxCapacity) {
-            pot.status = PotStatus.SUCCESS
-        }
+        if (pot.currentCount >= pot.maxCapacity) pot.status = PotStatus.SUCCESS
     }
 
     @Transactional
@@ -111,6 +115,7 @@ class PotService (
             pot.currentCount -= 1
         }
 
+        //TODO 방장(ownerId) 나가는 경우 처리
         if (pot.ownerId == userId) {
             if (pot.currentCount == 0) {
                 potRepository.delete(pot)
@@ -123,9 +128,16 @@ class PotService (
     }
 
     @Transactional(readOnly = true)
-    fun searchPots(departureId: Long, destinationId: Long, pageable: Pageable): Page<PotDto> {
+    fun searchPots(
+        departureId: Long,
+        destinationId: Long,
+        pageable: Pageable
+    ): Page<PotDto> {
         return potRepository.findAllByDepartureIdAndDestinationIdAndStatusOrderByDepartureTimeAsc(
-            departureId, destinationId, PotStatus.RECRUITING, pageable
+            departureId,
+            destinationId,
+            PotStatus.RECRUITING,
+            pageable
         ).map { PotDto.from(it) }
     }
 
