@@ -115,7 +115,6 @@ class PotService (
             pot.currentCount -= 1
         }
 
-        //TODO 방장(ownerId) 나가는 경우 처리
         if (pot.ownerId == userId) {
             if (pot.currentCount == 0) {
                 potRepository.delete(pot)
