@@ -7,7 +7,13 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 interface ParticipantRepository : JpaRepository<Participants, Long>{
-    fun existsByUserId(userId: Long): Boolean
+    fun existsByUserIdAndPotId(
+        userId: Long,
+        potId: Long
+    ): Boolean
+    fun existsByUserId(
+        userId: Long
+    ): Boolean
     fun findByUserId(userId: Long): Participants?
     fun deleteByUserIdAndPotId(userId: Long, potId: Long)
     fun deleteAllByPotId(potId: Long)
