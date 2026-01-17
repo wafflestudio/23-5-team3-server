@@ -56,8 +56,6 @@ class PotService (
             )
         )
 
-        userRepository.updateActivePotIdForUsers(listOf(userId), save.id)
-
         return CreatePotResponse(
             createdPotId = save.id!!
         )
@@ -68,19 +66,7 @@ class PotService (
         userId: Long,
         potId: Long
     ) {
-        // 1. 이 사람이 방장이 아니면 error
-        val pot = potRepository.findByOwnerId(userId) ?: throw PotNotFoundException()
-        if(pot.ownerId != userId) throw NotPotOwnerException()
-        
-        // 해당 방에 소속된 모든 유저들의 active pot id를 초기화하기 위함
-        val users = participantRepository.findUserIdsByPotId(potId) // List<Long>
-        if(users.isNotEmpty()){
-            userRepository.updateActivePotIdForUsers(users, null)
-        }
-        
-        // 2. 방장이면 방 삭제
-        participantRepository.deleteAllByPotId(potId)
-        potRepository.deleteById(potId)
+
     }
 
     @Transactional
@@ -98,20 +84,13 @@ class PotService (
             )
         )
 
-        userRepository.updateActivePotIdForUsers(listOf(userId), potId)
         pot.currentCount += 1
-
-        if (pot.currentCount >= pot.maxCapacity) {
-            pot.status = PotStatus.SUCCESS
-        }
     }
 
     @Transactional
     fun leavePot(userId: Long, potId: Long) {
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
         if (!participantRepository.existsByUserId(userId)) throw NotParticipatingException()
-
-        userRepository.updateActivePotIdForUsers(listOf(userId), null)
 
         participantRepository.deleteByUserIdAndPotId(userId, potId)
 
