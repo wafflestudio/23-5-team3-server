@@ -41,7 +41,7 @@ class SecurityConfig(
                     endpoint ->
                         endpoint.userService(googleOAuth2UserService)
                 }
-                it.defaultSuccessUrl("/user/profile", true)
+                it.defaultSuccessUrl("https://d2j21bk78krg0p.cloudfront.net", true)
             }
             .logout {
                 it.logoutRequestMatcher(AntPathRequestMatcher("/logout"))
