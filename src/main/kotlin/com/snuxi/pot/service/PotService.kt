@@ -28,7 +28,6 @@ class PotService (
     @Transactional
     fun createPot(
         userId: Long,
-        ownerId: Long,
         departureId: Long,
         destinationId: Long,
         departureTime: LocalDateTime,
@@ -41,7 +40,7 @@ class PotService (
 
         val save = potRepository.save(
             Pots(
-                ownerId = ownerId,
+                ownerId = userId,
                 departureId = departureId,
                 destinationId = destinationId,
                 departureTime = departureTime,

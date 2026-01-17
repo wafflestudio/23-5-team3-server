@@ -25,7 +25,7 @@ spring:
         bucket: snuxi-dev-assets
 
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/snuxi?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&useUnicode=true&characterEncoding=utf8mb4
+    url: jdbc:mysql://127.0.0.1:3306/snuxi?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
     username: ${DB_USER:snuxi}
     password: ${DB_PASSWORD:snuxi_pw}
     driver-class-name: com.mysql.cj.jdbc.Driver
