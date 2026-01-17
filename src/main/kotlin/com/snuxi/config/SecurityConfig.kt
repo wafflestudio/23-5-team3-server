@@ -3,7 +3,6 @@ package com.snuxi.config
 import com.snuxi.user.service.GoogleOAuth2UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
@@ -11,6 +10,7 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.security.config.Customizer
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
 @EnableWebSecurity
@@ -23,7 +23,15 @@ class SecurityConfig(
             .cors ( Customizer.withDefaults() )
             .csrf { it.disable() }
             .authorizeHttpRequests {
-                it.requestMatchers("/", "/login").permitAll()
+                it.requestMatchers(
+                    "/",
+                    "/login",
+                    "/error",
+                    "/oauth2/**",
+                    "/login/oauth2/**",
+                    "/favicon.ico",
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .oauth2Login {
@@ -35,6 +43,7 @@ class SecurityConfig(
                 it.defaultSuccessUrl("/user/profile", true)
             }
             .logout {
+                it.logoutRequestMatcher(AntPathRequestMatcher("/logout"))
                 it.logoutSuccessUrl("/login")
                 it.logoutUrl("/logout")
                 it.invalidateHttpSession(true)
