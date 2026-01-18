@@ -1,4 +1,4 @@
-package com.snuxi.global.config
+package com.snuxi.exception
 
 import org.springframework.http.HttpStatusCode
 

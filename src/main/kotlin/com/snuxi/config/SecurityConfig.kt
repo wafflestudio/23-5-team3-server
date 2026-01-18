@@ -16,10 +16,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    val googleOAuth2UserService: GoogleOAuth2UserService
+    val googleOAuth2UserService: GoogleOAuth2UserService,
+    val httpCookieOAuth2AuthorizationRequestRepository: HttpCookieOAuth2AuthorizationRequestRepository,
+    val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler
 ) {
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    fun filterChain(
+        http: HttpSecurity,
+    ): SecurityFilterChain {
         http
             .cors ( Customizer.withDefaults() )
             .csrf { it.disable() }
@@ -37,11 +41,14 @@ class SecurityConfig(
             }
             .oauth2Login {
                 it.loginPage("/login")
+                it.authorizationEndpoint { endpoint ->
+                    endpoint.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+                }
                 it.userInfoEndpoint {
                     endpoint ->
                         endpoint.userService(googleOAuth2UserService)
                 }
-                it.defaultSuccessUrl("/user/profile", true)
+                it.successHandler(oAuth2AuthenticationSuccessHandler)
             }
             .logout {
                 it.logoutRequestMatcher(AntPathRequestMatcher("/logout"))
@@ -60,7 +67,7 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:5173", "https://d2c0wdnl0iqvgb.cloudfront.net")
+        configuration.allowedOrigins = listOf("http://localhost:5173", "https://d2c0wdnl0iqvgb.cloudfront.net", "https://snuxi.com")
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
         configuration.allowedHeaders = listOf("*")
         configuration.allowCredentials = true
