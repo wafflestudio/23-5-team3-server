@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS chat_message
 (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    pot_id BIGINT,
-    sender_id BIGINT,
+    pot_id BIGINT NOT NULL,
+    sender_id BIGINT NOT NULL,
     text TEXT,
     datetime_send_at TIMESTAMP(6) NOT NULL,
 
