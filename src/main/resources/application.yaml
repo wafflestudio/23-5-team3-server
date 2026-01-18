@@ -37,4 +37,3 @@ server:
       cookie:
         same-site: none
         secure: true
-        http-only: true
