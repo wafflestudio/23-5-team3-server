@@ -17,10 +17,6 @@ interface PotRepository : JpaRepository<Pots, Long> {
         pageable: Pageable
     ): Page<Pots>
 
-    fun findByOwnerId(
-        ownerId: Long,
-    ): Pots?
-
     // UPDATE query (lock)
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(
