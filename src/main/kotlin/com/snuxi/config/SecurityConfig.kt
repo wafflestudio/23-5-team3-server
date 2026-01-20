@@ -18,7 +18,9 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 class SecurityConfig(
     val googleOAuth2UserService: GoogleOAuth2UserService,
     val httpCookieOAuth2AuthorizationRequestRepository: HttpCookieOAuth2AuthorizationRequestRepository,
-    val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler
+    val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
+    val customLogoutSuccessHandler: CustomLogoutSuccessHandler
+
 ) {
     @Bean
     fun filterChain(
@@ -52,8 +54,8 @@ class SecurityConfig(
             }
             .logout {
                 it.logoutRequestMatcher(AntPathRequestMatcher("/logout"))
-                it.logoutSuccessUrl("/login")
                 it.logoutUrl("/logout")
+                it.logoutSuccessHandler(customLogoutSuccessHandler)
                 it.invalidateHttpSession(true)
             }
             .exceptionHandling {
