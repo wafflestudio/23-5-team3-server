@@ -42,3 +42,4 @@ out/
 ###xml
 *.xml
 repomix-output.*
+node_modules
