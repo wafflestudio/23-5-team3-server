@@ -1,0 +1,39 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/snuxi-server .
+          docker push ${{ secrets.DOCKER_USERNAME }}/snuxi-server
+
+      - name: SSH Remote Deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/23-5-team3-server || (mkdir -p ~/23-5-team3-server && cd ~/23-5-team3-server && git clone https://github.com/WaffleStudio23-5/23-5-team3-server.git .)
+            git pull origin main
+            
+            export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            export DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+            export GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            export GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            
+            sudo docker-compose -f docker-compose.prod.yaml pull
+            sudo docker-compose -f docker-compose.prod.yaml up -d

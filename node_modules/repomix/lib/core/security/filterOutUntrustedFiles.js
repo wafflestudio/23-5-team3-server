@@ -1,0 +1,2 @@
+export const filterOutUntrustedFiles = (rawFiles, suspiciousFilesResults) => rawFiles.filter((rawFile) => !suspiciousFilesResults.some((result) => result.filePath === rawFile.path));
+//# sourceMappingURL=filterOutUntrustedFiles.js.map

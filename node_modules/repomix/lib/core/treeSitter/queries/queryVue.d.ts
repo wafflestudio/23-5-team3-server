@@ -1,0 +1,2 @@
+export declare const queryVue = "\n(comment) @comment\n\n(template_element) @template\n\n(script_element) @script\n\n(style_element) @style\n\n(interpolation) @interpolation\n";
+//# sourceMappingURL=queryVue.d.ts.map

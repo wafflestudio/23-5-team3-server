@@ -1,0 +1,2 @@
+export declare const queryCss = "\n(comment) @comment\n\n(rule_set\n  (selectors) @name.definition.selector\n) @definition.selector\n\n(at_rule) @definition.at_rule\n";
+//# sourceMappingURL=queryCss.d.ts.map

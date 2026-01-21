@@ -1,0 +1,32 @@
+services:
+  snuxi-app:
+    image: ${DOCKER_USERNAME}/snuxi-server:latest
+    container_name: snuxi-app
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://snuxi-mysql:3306/snuxi?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+      - SPRING_DATASOURCE_USERNAME=snuxi
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    depends_on:
+      - snuxi-mysql
+
+  snuxi-mysql:
+    image: mysql:8.0
+    container_name: snuxi-mysql
+    restart: always
+    environment:
+      - MYSQL_DATABASE=snuxi
+      - MYSQL_USER=snuxi
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
