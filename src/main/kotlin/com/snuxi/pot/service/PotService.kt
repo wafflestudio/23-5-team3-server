@@ -151,16 +151,37 @@ class PotService (
 
     @Transactional(readOnly = true)
     fun searchPots(
-        departureId: Long,
-        destinationId: Long,
+        departureId: Long?,
+        destinationId: Long?,
         pageable: Pageable
     ): Page<PotDto> {
-        return potRepository.findAllByDepartureIdAndDestinationIdAndStatusOrderByDepartureTimeAsc(
-            departureId,
-            destinationId,
-            PotStatus.RECRUITING,
-            pageable
-        ).map { PotDto.from(it) }
+        val listPots = when {
+            departureId == null && destinationId == null -> potRepository.findAllByStatusOrderByDepartureTimeAsc(
+                PotStatus.RECRUITING,
+                pageable
+            )
+
+            departureId == null && destinationId != null -> potRepository.findAllByDestinationIdAndStatusOrderByDepartureTimeAsc(
+                destinationId,
+                PotStatus.RECRUITING,
+                pageable
+            )
+
+            departureId != null && destinationId == null -> potRepository.findAllByDepartureIdAndStatusOrderByDepartureTimeAsc(
+                departureId,
+                PotStatus.RECRUITING,
+                pageable
+            )
+
+            else -> potRepository.findAllByDepartureIdAndDestinationIdAndStatusOrderByDepartureTimeAsc(
+                departureId!!,
+                destinationId!!,
+                PotStatus.RECRUITING,
+                pageable
+            )
+        }
+
+        return listPots.map { PotDto.from(it) }
     }
 
     @Transactional(readOnly = true)
