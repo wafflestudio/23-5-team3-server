@@ -4,9 +4,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 
 @Component
-class CurrentUserIdResolver (
-
-) {
+class CurrentUserIdResolver {
     fun getCurrentUserId(): Long {
         val auth = SecurityContextHolder.getContext().authentication ?: throw IllegalStateException("Authentication info not found")
 

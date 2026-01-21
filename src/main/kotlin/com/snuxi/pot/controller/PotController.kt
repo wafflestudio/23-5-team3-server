@@ -77,8 +77,4 @@ class PotController (
     ): PotDto? {
         return potService.getMyPot(principal.userId)
     }
-
-
-
-
 }
