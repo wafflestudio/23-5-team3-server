@@ -46,7 +46,7 @@ class StompMessageAuthInterceptor (
         val splitDest = dest.split("/")
         val roomsIdx = splitDest.indexOf("rooms")
 
-        if(roomsIdx < 0 || roomsIdx >= splitDest.size) return null
+        if(roomsIdx < 0 || roomsIdx + 1 >= splitDest.size) return null
         return splitDest[roomsIdx + 1].toLongOrNull()
     }
 

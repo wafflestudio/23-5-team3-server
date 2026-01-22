@@ -10,7 +10,9 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 
 @Configuration
 @EnableWebSocketMessageBroker
-class WebSocketConfig : WebSocketMessageBrokerConfigurer {
+class WebSocketConfig(
+    private val stompMessageAuthInterceptor: StompMessageAuthInterceptor
+) : WebSocketMessageBrokerConfigurer {
     // configureMessageBroker,
     // registerStompEndpoints override
 
@@ -38,6 +40,6 @@ class WebSocketConfig : WebSocketMessageBrokerConfigurer {
     override fun configureClientInboundChannel(
         channelRegistration: ChannelRegistration
     ) {
-        channelRegistration.interceptors()
+        channelRegistration.interceptors(stompMessageAuthInterceptor)
     }
 }
