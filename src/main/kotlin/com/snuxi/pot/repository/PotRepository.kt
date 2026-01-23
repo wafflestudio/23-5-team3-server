@@ -17,9 +17,22 @@ interface PotRepository : JpaRepository<Pots, Long> {
         pageable: Pageable
     ): Page<Pots>
 
-    fun findByOwnerId(
-        ownerId: Long,
-    ): Pots?
+    fun findAllByStatusOrderByDepartureTimeAsc(
+        status: PotStatus,
+        pageable: Pageable
+    ): Page<Pots>
+
+    fun findAllByDestinationIdAndStatusOrderByDepartureTimeAsc(
+        destinationId: Long,
+        status: PotStatus,
+        pageable: Pageable
+    ): Page<Pots>
+
+    fun findAllByDepartureIdAndStatusOrderByDepartureTimeAsc(
+        departureId: Long,
+        status: PotStatus,
+        pageable: Pageable
+    ): Page<Pots>
 
     // UPDATE query (lock)
     @Modifying(clearAutomatically = true, flushAutomatically = true)

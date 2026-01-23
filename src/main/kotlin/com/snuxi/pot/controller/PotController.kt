@@ -64,8 +64,8 @@ class PotController (
 
     @GetMapping("/rooms/search")
     fun search(
-        @RequestParam departureId: Long,
-        @RequestParam destinationId: Long,
+        @RequestParam departureId: Long?,
+        @RequestParam destinationId: Long?,
         @PageableDefault(size = 10) pageable: Pageable
     ): Page<PotDto> {
         return potService.searchPots(departureId, destinationId, pageable)
@@ -77,8 +77,4 @@ class PotController (
     ): PotDto? {
         return potService.getMyPot(principal.userId)
     }
-
-
-
-
 }
