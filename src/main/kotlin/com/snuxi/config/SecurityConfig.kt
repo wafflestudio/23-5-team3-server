@@ -38,7 +38,8 @@ class SecurityConfig(
                     "/login/oauth2/**",
                     "/favicon.ico",
                     "/swagger-ui/**",
-                    "/v3/api-docs/**").permitAll()
+                    "/v3/api-docs/**",
+                    "/rooms/search").permitAll()
                 it.anyRequest().authenticated()
             }
             .oauth2Login {
