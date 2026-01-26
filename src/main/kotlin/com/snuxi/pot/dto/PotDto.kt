@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 data class PotDto(
     val id: Long,
     val ownerId: Long,
+    val ownerName: String,
     val departureId: Long,
     val destinationId: Long,
     val departureTime: LocalDateTime,
@@ -17,9 +18,10 @@ data class PotDto(
     val status: PotStatus
 ) {
     companion object {
-        fun from(entity: Pots) = PotDto(
+        fun from(entity: Pots, ownerName: String) = PotDto(
             id = entity.id!!,
             ownerId = entity.ownerId,
+            ownerName = ownerName,
             departureId = entity.departureId,
             destinationId = entity.destinationId,
             departureTime = entity.departureTime,
