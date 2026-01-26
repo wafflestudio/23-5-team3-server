@@ -39,6 +39,7 @@ class SecurityConfig(
                     "/favicon.ico",
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
+                    "/maps/landmarks",
                     "/rooms/search").permitAll()
                 it.anyRequest().authenticated()
             }

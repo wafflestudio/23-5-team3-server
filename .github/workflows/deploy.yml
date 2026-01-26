@@ -36,4 +36,5 @@ jobs:
             export AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"
             
             sudo -E docker-compose -f docker-compose.prod.yaml pull
+            sudo -E docker-compose -f docker-compose.prod.yaml down --remove-orphans
             sudo -E docker-compose -f docker-compose.prod.yaml up -d
