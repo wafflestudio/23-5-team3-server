@@ -197,4 +197,41 @@ class PotService (
     ) {
         userRepository.updateActivePotIdForUsers(userIds, potId)
     }
+
+    @Transactional
+    fun kickParticipant(
+        requestUserId: Long,
+        potId: Long,
+        targetUserId: Long
+    ) {
+        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+
+        // 요청자가 방장인지 확인
+        if (pot.ownerId != requestUserId) {
+            throw NotPotOwnerException()
+        }
+
+        // 자기 자신을 강퇴하려는 경우 차단
+        if (requestUserId == targetUserId) {
+            throw CannotKickSelfException()
+        }
+
+        // 강퇴 대상이 실제로 이 방에 있는지 확인
+        if (!participantRepository.existsByUserIdAndPotId(targetUserId, potId)) {
+            throw NotParticipatingException()
+        }
+
+        // 내보내기 진행
+        updateActivePotIdUsers(listOf(targetUserId), null)
+        participantRepository.deleteByUserIdAndPotId(targetUserId, potId)
+
+        val updated = potRepository.tryLeavePot(
+            potId = potId,
+            recruitingStatus = PotStatus.RECRUITING,
+            successStatus = PotStatus.SUCCESS
+        )
+        if (updated == 0) {
+            throw TemporarilyNotLeavePotException()
+        }
+    }
 }
