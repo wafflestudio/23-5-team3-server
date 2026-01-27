@@ -60,6 +60,13 @@ class NotPotOwnerException :
         msg = "해당 팟의 방장이 아닙니다."
     )
 
+class CannotKickSelfException :
+    PotException(
+        errorCode = 400,
+        httpStatusCode = HttpStatus.BAD_REQUEST,
+        msg = "방장은 스스로를 강퇴할 수 없습니다."
+    )
+
 class TemporarilyNotLeavePotException :
     PotException(
         errorCode = 400,
