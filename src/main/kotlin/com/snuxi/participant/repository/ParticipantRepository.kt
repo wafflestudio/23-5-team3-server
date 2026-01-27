@@ -27,4 +27,18 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
     ): List<Long>
 
     fun findFirstByPotIdOrderByJoinedAtAsc(potId: Long): Participants?
+
+    // 실제로 삭제된 row 수 반환
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query(
+        """
+            DELETE from Participants p
+            WHERE p.userId = :userId
+            AND p.potId = :potId
+        """
+    )
+    fun deleteByUserIdANdPotIdReturnCount(
+        @Param("userId") userId: Long,
+        @Param("potId") potId: Long
+    ): Int
 }
