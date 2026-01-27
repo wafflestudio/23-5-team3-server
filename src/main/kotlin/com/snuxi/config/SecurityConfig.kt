@@ -34,6 +34,8 @@ class SecurityConfig(
                     "/",
                     "/login",
                     "/error",
+                    "/maps/landmarks",
+                    "/rooms/search",
                     "/oauth2/**",
                     "/login/oauth2/**",
                     "/favicon.ico",
