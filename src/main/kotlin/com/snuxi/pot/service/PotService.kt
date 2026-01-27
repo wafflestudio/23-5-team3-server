@@ -8,6 +8,7 @@ import com.snuxi.pot.dto.PotDto
 import com.snuxi.pot.entity.Pots
 import com.snuxi.pot.repository.PotRepository
 import com.snuxi.user.repository.UserRepository
+import io.lettuce.core.KillArgs.Builder.user
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -180,15 +181,22 @@ class PotService (
                 pageable
             )
         }
+        val ownerIds = listPots.content.map { it.ownerId }.distinct()
+        val ownersMap = userRepository.findAllById(ownerIds).associateBy({ it.id!! }, { it.username })
 
-        return listPots.map { PotDto.from(it) }
+        return listPots.map { pot ->
+            val ownerName = ownersMap[pot.ownerId] ?: "알 수 없는 사용자"
+            PotDto.from(pot, ownerName)
+        }
     }
 
     @Transactional(readOnly = true)
     fun getMyPot(userId: Long): PotDto? {
         val participation = participantRepository.findByUserId(userId) ?: return null
         val pot = potRepository.findByIdOrNull(participation.potId) ?: return null
-        return PotDto.from(pot)
+        val owner = userRepository.findByIdOrNull(pot.ownerId)
+        val ownerName = owner ?.username ?: "알 수 없는 사용자"
+        return PotDto.from(pot, ownerName)
     }
 
     private fun updateActivePotIdUsers(
