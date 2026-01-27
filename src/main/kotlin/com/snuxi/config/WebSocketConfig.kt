@@ -31,7 +31,10 @@ class WebSocketConfig(
             .setAllowedOriginPatterns(
                 // 신뢰하는 프론트 도메인만 추가
                 // 추후 다른 주소들 추가 필요
-                "https://d2j21bk78krg0p.cloudfront.net"
+                "https://d2j21bk78krg0p.cloudfront.net",
+                "http://localhost:5173",
+                "https://d2c0wdnl0iqvgb.cloudfront.net",
+                "https://snuxi.com"
             )
     }
 
