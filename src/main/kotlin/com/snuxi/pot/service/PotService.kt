@@ -1,5 +1,6 @@
 package com.snuxi.pot.service
 
+import com.snuxi.chat.repository.ChatMessageRepository
 import com.snuxi.participant.entity.Participants
 import com.snuxi.participant.repository.ParticipantRepository
 import com.snuxi.pot.*
@@ -20,7 +21,8 @@ import java.time.LocalDateTime
 class PotService (
     private val potRepository: PotRepository,
     private val participantRepository: ParticipantRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val chatMessageRepository: ChatMessageRepository,
 ) {
     @Transactional
     fun createPot(
@@ -197,7 +199,11 @@ class PotService (
         val pot = potRepository.findByIdOrNull(participation.potId) ?: return null
         val owner = userRepository.findByIdOrNull(pot.ownerId)
         val ownerName = owner ?.username ?: "알 수 없는 사용자"
-        return PotDto.from(pot, ownerName)
+        val unreadCount = chatMessageRepository.countByPotIdAndIdGreaterThan(
+            pot.id!!,
+            participation.lastReadMessageId
+        )
+        return PotDto.from(pot, ownerName, unreadCount)
     }
 
     private fun updateActivePotIdUsers(
