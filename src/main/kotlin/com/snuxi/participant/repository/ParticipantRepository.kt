@@ -15,6 +15,8 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
         userId: Long
     ): Boolean
     fun findByUserId(userId: Long): Participants?
+    fun findAllByPotId(userId: Long): List<Participants>
+    fun findByUserIdAndPotId(userId: Long, potId: Long): Participants?
     fun deleteByUserIdAndPotId(userId: Long, potId: Long)
     fun deleteAllByPotId(potId: Long)
 
@@ -41,4 +43,12 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
         @Param("userId") userId: Long,
         @Param("potId") potId: Long
     ): Int
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE Participants p SET p.lastReadMessageId = :messageId WHERE p.userId = :userId AND p.potId = :potId")
+    fun updateLastReadMessageId(
+        @Param("userId") userId: Long,
+        @Param("potId") potId: Long,
+        @Param("messageId") messageId: Long
+    )
 }

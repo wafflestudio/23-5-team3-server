@@ -18,4 +18,10 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
         potId: Long,
         pageable: Pageable
     ): Page<ChatMessage>
+
+    // 안 읽은 개수 세기
+    fun countByPotIdAndIdGreaterThan(
+        potId: Long,
+        lastReadMessageId: Long
+    ): Long
 }
