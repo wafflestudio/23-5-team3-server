@@ -16,5 +16,6 @@ class Participants (
     var id: Long? = null,
     @Column(name = "user_id") var userId: Long,
     @Column(name = "pot_id") var potId: Long,
-    @Column(name = "joined_at") var joinedAt: LocalDateTime
+    @Column(name = "joined_at") var joinedAt: LocalDateTime,
+    @Column(name = "last_read_message_id") var lastReadMessageId: Long = 0
 )
