@@ -5,7 +5,6 @@ import com.snuxi.chat.dto.ChatMessageItemDto
 import com.snuxi.chat.dto.ChatMessagePageDto
 import com.snuxi.chat.repository.ChatMessageRepository
 import com.snuxi.participant.repository.ParticipantRepository
-import com.snuxi.user.service.UserService
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -47,12 +46,19 @@ class ChatMessageService (
             )
         }
 
+        // 방 멤버들의 읽은 상태 조회
+        val participants = participantRepository.findAllByPotId(potId)
+        val readStatuses = participants.associate {
+            it.userId to it.lastReadMessageId
+        }
+
         // cursor 갱신
         val nextCursor = items.lastOrNull()?.id
         return ChatMessagePageDto(
             items = items,
             nextCursor = if(page.hasNext()) nextCursor else null,
-            hasNext = page.hasNext()
+            hasNext = page.hasNext(),
+            readStatuses = readStatuses
         )
     }
 }
