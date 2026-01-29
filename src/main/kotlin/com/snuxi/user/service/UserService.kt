@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 class UserService(
     val userRepository: UserRepository
 ) {
@@ -15,6 +15,11 @@ class UserService(
         val user = userRepository.findByEmail(email)
             ?: throw UserNotFoundException()
 
+        return UserResponse(user)
+    }
+    fun updateUsername(email: String, newName: String): UserResponse {
+        val user = userRepository.findByEmail(email) ?: throw UserNotFoundException()
+        user.username = newName
         return UserResponse(user)
     }
 }
