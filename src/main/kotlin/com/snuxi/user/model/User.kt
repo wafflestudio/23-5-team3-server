@@ -19,7 +19,7 @@ class User(
     val email: String,
 
     @Column(nullable = false)
-    val username: String,
+    var username: String,
 
     var profileImageUrl: String? = null,
 

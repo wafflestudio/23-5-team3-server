@@ -1,11 +1,14 @@
 package com.snuxi.user.controller
 
 import com.snuxi.user.dto.UserResponse
+import com.snuxi.user.dto.UserUpdateRequest
 import com.snuxi.user.service.UserService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -22,5 +25,14 @@ class UserController(
         val email = oAuth2User.attributes["email"] as String
         val profile = userService.getProfile(email)
         return ResponseEntity.ok(profile)
+    }
+    @PatchMapping("/profile/name")
+    fun updateUsername(
+        @AuthenticationPrincipal oAuth2User: OAuth2User,
+        @RequestBody request: UserUpdateRequest
+    ): ResponseEntity<UserResponse> {
+        val email = oAuth2User.attributes["email"] as String
+        val updatedProfile = userService.updateUsername(email, request.username)
+        return ResponseEntity.ok(updatedProfile)
     }
 }
