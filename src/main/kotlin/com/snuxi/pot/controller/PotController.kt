@@ -71,6 +71,20 @@ class PotController (
         return potService.searchPots(departureId, destinationId, pageable)
     }
 
+    @DeleteMapping("/rooms/{roomId}/members/{targetUserId}")
+    fun kickMember(
+        @AuthenticationPrincipal principal: CustomOAuth2User,
+        @PathVariable roomId: Long,
+        @PathVariable targetUserId: Long
+    ): ResponseEntity<Void> {
+        potService.kickParticipant(
+            requestUserId = principal.userId,
+            potId = roomId,
+            targetUserId = targetUserId
+        )
+        return ResponseEntity.noContent().build()
+    }
+
     @GetMapping("/users/me/pot")
     fun getMyPot(
         @AuthenticationPrincipal principal: CustomOAuth2User,
