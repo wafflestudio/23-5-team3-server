@@ -37,7 +37,7 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
             AND p.potId = :potId
         """
     )
-    fun deleteByUserIdANdPotIdReturnCount(
+    fun deleteByUserIdAndPotIdReturnCount(
         @Param("userId") userId: Long,
         @Param("potId") potId: Long
     ): Int
