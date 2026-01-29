@@ -232,7 +232,7 @@ class PotService (
 
         // 내보내기 진행
         updateActivePotIdUsers(listOf(targetUserId), null)
-        val deletedCount = participantRepository.deleteByUserIdANdPotIdReturnCount(userId, potId)
+        val deletedCount = participantRepository.deleteByUserIdAndPotIdReturnCount(targetUserId, potId)
         if(deletedCount == 0) throw NotParticipatingException()
 
         val updated = potRepository.tryLeavePot(
