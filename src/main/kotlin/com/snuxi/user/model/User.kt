@@ -27,6 +27,8 @@ class User(
     val role: Role = Role.USER,
 
     val activePotId: Long? = null,
+
+    var fcmToken: String? = null
 ) {
     @CreatedDate
     var createdAt: Instant? = null
