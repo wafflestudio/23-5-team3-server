@@ -1,5 +1,6 @@
 package com.snuxi.pot.service
 
+import com.snuxi.notification.service.PushService
 import com.snuxi.chat.repository.ChatMessageRepository
 import com.snuxi.participant.entity.Participants
 import com.snuxi.participant.repository.ParticipantRepository
@@ -21,6 +22,8 @@ import java.time.LocalDateTime
 class PotService (
     private val potRepository: PotRepository,
     private val participantRepository: ParticipantRepository,
+    private val userRepository: UserRepository,
+    private val pushService: PushService
     private val userRepository: UserRepository,
     private val chatMessageRepository: ChatMessageRepository,
 ) {
@@ -77,6 +80,16 @@ class PotService (
 
         // 해당 방에 소속된 모든 유저들의 active pot id를 초기화하기 위함
         val users = participantRepository.findUserIdsByPotId(potId)
+
+        val notifyTargetIds = users.filter { it != userId }
+        if (notifyTargetIds.isNotEmpty()) {
+            pushService.sendNotificationToUsers(
+                notifyTargetIds,
+                "SNUXI 팟 취소",
+                "참여 중이던 팟이 방장에 의해 취소되었습니다."
+            )
+        }
+
         if(users.isNotEmpty()) updateActivePotIdUsers(users, null)
 
         // 2. 방장이면 방 삭제
@@ -101,7 +114,7 @@ class PotService (
                     joinedAt = LocalDateTime.now()
                 )
             )
-        } catch (e: Exception){
+        } catch (_: Exception){
             throw TemporarilyNotJoinPotException()
         }
 
@@ -113,6 +126,16 @@ class PotService (
         )
         if(updated == 0) throw PotFullException()
 
+        //업뎃 후 팟 상태 확인하고 SUCCESS 시 알림 발송
+        val potAfterJoin = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+        if (potAfterJoin.status == PotStatus.SUCCESS) {
+            val participantIds = participantRepository.findUserIdsByPotId(potId)
+            pushService.sendNotificationToUsers(
+                participantIds,
+                "SNUXI 모집 완료",
+                "참여하신 팟의 모집이 완료되었습니다. 채팅을 확인해주세요."
+            )
+        }
         // user active pot id 또한 업데이트
         updateActivePotIdUsers(listOf(userId), potId)
     }
@@ -211,43 +234,5 @@ class PotService (
         potId: Long?
     ) {
         userRepository.updateActivePotIdForUsers(userIds, potId)
-    }
-
-    @Transactional
-    fun kickParticipant(
-        requestUserId: Long,
-        potId: Long,
-        targetUserId: Long
-    ) {
-        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
-
-        // 요청자가 방장인지 확인
-        if (pot.ownerId != requestUserId) {
-            throw NotPotOwnerException()
-        }
-
-        // 자기 자신을 강퇴하려는 경우 차단
-        if (requestUserId == targetUserId) {
-            throw CannotKickSelfException()
-        }
-
-        // 강퇴 대상이 실제로 이 방에 있는지 확인
-        if (!participantRepository.existsByUserIdAndPotId(targetUserId, potId)) {
-            throw NotParticipatingException()
-        }
-
-        // 내보내기 진행
-        updateActivePotIdUsers(listOf(targetUserId), null)
-        val deletedCount = participantRepository.deleteByUserIdAndPotIdReturnCount(targetUserId, potId)
-        if(deletedCount == 0) throw NotParticipatingException()
-
-        val updated = potRepository.tryLeavePot(
-            potId = potId,
-            recruitingStatus = PotStatus.RECRUITING,
-            successStatus = PotStatus.SUCCESS
-        )
-        if (updated == 0) {
-            throw TemporarilyNotLeavePotException()
-        }
     }
 }
