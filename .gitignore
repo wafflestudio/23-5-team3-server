@@ -43,3 +43,8 @@ out/
 *.xml
 repomix-output.*
 node_modules
+
+### FCM firebase key
+src/main/resources/serviceAccountKey.json
+
+serviceAccountKey.json

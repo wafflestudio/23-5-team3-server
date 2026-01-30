@@ -17,9 +17,17 @@ class UserService(
 
         return UserResponse(user)
     }
+
     fun updateUsername(email: String, newName: String): UserResponse {
         val user = userRepository.findByEmail(email) ?: throw UserNotFoundException()
         user.username = newName
         return UserResponse(user)
+    }
+
+    @Transactional
+    fun updateNotificationEnabled(userId: Long, enabled: Boolean) {
+        val user = userRepository.findById(userId)
+            .orElseThrow { UserNotFoundException() }
+        user.notificationEnabled = enabled
     }
 }

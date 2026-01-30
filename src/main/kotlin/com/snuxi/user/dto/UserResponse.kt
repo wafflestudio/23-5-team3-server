@@ -7,12 +7,14 @@ data class UserResponse(
     val email: String,
     val username: String,
     val profileImageUrl: String?,
-    val role: Role
+    val role: Role,
+    val notificationEnabled: Boolean
 ) {
     constructor(user: User) : this(
         email = user.email,
         username = user.username,
         profileImageUrl = user.profileImageUrl,
-        role = user.role
+        role = user.role,
+        notificationEnabled = user.notificationEnabled
     )
 }
