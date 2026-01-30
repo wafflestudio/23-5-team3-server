@@ -78,16 +78,6 @@ class PotService (
 
         // 해당 방에 소속된 모든 유저들의 active pot id를 초기화하기 위함
         val users = participantRepository.findUserIdsByPotId(potId)
-
-        val notifyTargetIds = users.filter { it != userId }
-        if (notifyTargetIds.isNotEmpty()) {
-            pushService.sendNotificationToUsers(
-                notifyTargetIds,
-                "SNUXI 팟 취소",
-                "참여 중이던 팟이 방장에 의해 취소되었습니다."
-            )
-        }
-
         if(users.isNotEmpty()) updateActivePotIdUsers(users, null)
 
         // 2. 방장이면 방 삭제

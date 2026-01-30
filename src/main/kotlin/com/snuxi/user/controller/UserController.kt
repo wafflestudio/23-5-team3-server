@@ -55,13 +55,4 @@ class UserController(
         userService.updateNotificationEnabled(customOAuth2User.userId, enabled)
         return ResponseEntity.ok().build()
     }
-    @PatchMapping("/profile/name")
-    fun updateUsername(
-        @AuthenticationPrincipal oAuth2User: OAuth2User,
-        @RequestBody request: UserUpdateRequest
-    ): ResponseEntity<UserResponse> {
-        val email = oAuth2User.attributes["email"] as String
-        val updatedProfile = userService.updateUsername(email, request.username)
-        return ResponseEntity.ok(updatedProfile)
-    }
 }
