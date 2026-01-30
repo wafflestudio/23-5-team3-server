@@ -28,8 +28,6 @@ class User(
 
     val activePotId: Long? = null,
 
-    var fcmToken: String? = null,
-
     @Column(name = "notification_enabled")
     var notificationEnabled: Boolean = true
 ) {
