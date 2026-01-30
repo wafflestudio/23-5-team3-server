@@ -1,5 +1,6 @@
 package com.snuxi.pot.service
 
+import com.snuxi.notification.service.PushService
 import com.snuxi.participant.entity.Participants
 import com.snuxi.participant.repository.ParticipantRepository
 import com.snuxi.pot.*
@@ -19,7 +20,8 @@ import java.time.LocalDateTime
 class PotService (
     private val potRepository: PotRepository,
     private val participantRepository: ParticipantRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val pushService: PushService
 ) {
     @Transactional
     fun createPot(
@@ -74,6 +76,16 @@ class PotService (
 
         // 해당 방에 소속된 모든 유저들의 active pot id를 초기화하기 위함
         val users = participantRepository.findUserIdsByPotId(potId)
+
+        val notifyTargetIds = users.filter { it != userId }
+        if (notifyTargetIds.isNotEmpty()) {
+            pushService.sendNotificationToUsers(
+                notifyTargetIds,
+                "SNUXI 팟 취소",
+                "참여 중이던 팟이 방장에 의해 취소되었습니다."
+            )
+        }
+
         if(users.isNotEmpty()) updateActivePotIdUsers(users, null)
 
         // 2. 방장이면 방 삭제
@@ -98,7 +110,7 @@ class PotService (
                     joinedAt = LocalDateTime.now()
                 )
             )
-        } catch (e: Exception){
+        } catch (_: Exception){
             throw TemporarilyNotJoinPotException()
         }
 
@@ -110,6 +122,16 @@ class PotService (
         )
         if(updated == 0) throw PotFullException()
 
+        //업뎃 후 팟 상태 확인하고 SUCCESS 시 알림 발송
+        val potAfterJoin = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+        if (potAfterJoin.status == PotStatus.SUCCESS) {
+            val participantIds = participantRepository.findUserIdsByPotId(potId)
+            pushService.sendNotificationToUsers(
+                participantIds,
+                "SNUXI 모집 완료",
+                "참여하신 팟의 모집이 완료되었습니다. 채팅을 확인해주세요."
+            )
+        }
         // user active pot id 또한 업데이트
         updateActivePotIdUsers(listOf(userId), potId)
     }
