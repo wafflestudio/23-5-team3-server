@@ -15,7 +15,7 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
         userId: Long
     ): Boolean
     fun findByUserId(userId: Long): Participants?
-    fun findAllByPotId(userId: Long): List<Participants>
+    fun findAllByPotId(potId: Long): List<Participants>
     fun findByUserIdAndPotId(userId: Long, potId: Long): Participants?
     fun deleteByUserIdAndPotId(userId: Long, potId: Long)
     fun deleteAllByPotId(potId: Long)

@@ -10,7 +10,6 @@ import com.snuxi.pot.dto.PotDto
 import com.snuxi.pot.entity.Pots
 import com.snuxi.pot.repository.PotRepository
 import com.snuxi.user.repository.UserRepository
-import io.lettuce.core.KillArgs.Builder.user
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -23,8 +22,7 @@ class PotService (
     private val potRepository: PotRepository,
     private val participantRepository: ParticipantRepository,
     private val userRepository: UserRepository,
-    private val pushService: PushService
-    private val userRepository: UserRepository,
+    private val pushService: PushService,
     private val chatMessageRepository: ChatMessageRepository,
 ) {
     @Transactional
@@ -234,5 +232,31 @@ class PotService (
         potId: Long?
     ) {
         userRepository.updateActivePotIdForUsers(userIds, potId)
+    }
+
+    @Transactional
+    fun kickParticipant(requestUserId: Long, potId: Long, targetUserId: Long) {
+        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+
+        if (pot.ownerId != requestUserId) throw NotPotOwnerException()
+        if (requestUserId == targetUserId) throw CannotKickSelfException()
+        if (!participantRepository.existsByUserIdAndPotId(targetUserId, potId)) throw NotParticipatingException()
+
+        updateActivePotIdUsers(listOf(targetUserId), null)
+
+        // userId -> targetUserId로 수정, ANd -> And로 수정
+        val deletedCount = participantRepository.deleteByUserIdAndPotIdReturnCount(targetUserId, potId)
+        if(deletedCount == 0) throw NotParticipatingException()
+
+        val updated = potRepository.tryLeavePot(
+            potId = potId,
+            recruitingStatus = PotStatus.RECRUITING,
+            successStatus = PotStatus.SUCCESS
+        )
+
+        if (updated == 0) throw TemporarilyNotLeavePotException()
+
+        // 강퇴당한 유저에게 알림 전송
+        pushService.sendNotificationToUser(targetUserId, "SNUXI 강퇴 알림", "참여 중이던 팟에서 강퇴되었습니다.")
     }
 }
