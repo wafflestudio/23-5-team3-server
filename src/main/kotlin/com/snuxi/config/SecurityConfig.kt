@@ -29,6 +29,11 @@ class SecurityConfig(
         http
             .cors ( Customizer.withDefaults() )
             .csrf { it.disable() }
+            .headers {
+                    headers -> headers.frameOptions {
+                    frame -> frame.sameOrigin()
+                }
+            }
             .authorizeHttpRequests {
                 it.requestMatchers(
                     "/",
@@ -42,7 +47,8 @@ class SecurityConfig(
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/maps/landmarks",
-                    "/rooms/search").permitAll()
+                    "/rooms/search",
+                    "/ws/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .oauth2Login {
