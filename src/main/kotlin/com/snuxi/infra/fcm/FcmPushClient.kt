@@ -23,7 +23,7 @@ class FcmPushClient {
                 .setNotification(notification)
                 .build()
 
-            // 비동기로 전송 - 서버 저하 방지
+            // 비동기로 전송 이유: 서버 성능 저하 방지
             FirebaseMessaging.getInstance().sendEachForMulticastAsync(message)
         }
     }

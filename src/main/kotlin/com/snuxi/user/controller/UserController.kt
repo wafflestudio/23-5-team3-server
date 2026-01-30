@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -41,6 +43,15 @@ class UserController(
     ): ResponseEntity<Void> {
      deviceService.registerDevice(customOAuth2User.userId, request.token, request.deviceId, request.browserType
      )
+        return ResponseEntity.ok().build()
+    }
+
+    @PatchMapping("/notification")
+    fun toggleNotification(
+        @AuthenticationPrincipal customOAuth2User: CustomOAuth2User,
+        @RequestParam enabled: Boolean
+    ): ResponseEntity<Void> {
+        userService.updateNotificationEnabled(customOAuth2User.userId, enabled)
         return ResponseEntity.ok().build()
     }
 }
