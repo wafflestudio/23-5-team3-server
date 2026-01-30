@@ -14,6 +14,7 @@ data class UserResponse(
         email = user.email,
         username = user.username,
         profileImageUrl = user.profileImageUrl,
-        role = user.role
+        role = user.role,
+        notificationEnabled = user.notificationEnabled
     )
 }
