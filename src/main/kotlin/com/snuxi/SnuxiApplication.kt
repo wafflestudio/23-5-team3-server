@@ -6,9 +6,11 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
 import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
+import org.springframework.scheduling.annotation.EnableAsync
 
 //exclude = 테스트 용. 개발 후 삭제 필요
 @EnableJpaAuditing
+@EnableAsync
 @SpringBootApplication(exclude = [
         org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration::class
     ])
