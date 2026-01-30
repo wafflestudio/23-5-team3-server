@@ -24,7 +24,7 @@ class UserService(
     }
 
     @Transactional
-    fun updateNotificationEnabled(userId: String, enabled: Boolean) {
+    fun updateNotificationEnabled(userId: Long, enabled: Boolean) {
         val user = userRepository.findById(userId)
             .orElseThrow { UserNotFoundException() }
         user.notificationEnabled = enabled
