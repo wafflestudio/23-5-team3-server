@@ -8,6 +8,7 @@ import com.snuxi.pot.dto.PotDto
 import com.snuxi.pot.entity.Pots
 import com.snuxi.pot.repository.PotRepository
 import com.snuxi.user.repository.UserRepository
+import io.lettuce.core.KillArgs.Builder.user
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
@@ -122,7 +123,7 @@ class PotService (
 
         // user active pot id & participant 정보 삭제
         updateActivePotIdUsers(listOf(userId), null)
-        val deletedCount = participantRepository.deleteByUserIdANdPotIdReturnCount(userId, potId)
+        val deletedCount = participantRepository.deleteByUserIdAndPotIdReturnCount(userId, potId)
         if(deletedCount == 0) throw NotParticipatingException()
 
         // 원자적 update
@@ -181,15 +182,22 @@ class PotService (
                 pageable
             )
         }
+        val ownerIds = listPots.content.map { it.ownerId }.distinct()
+        val ownersMap = userRepository.findAllById(ownerIds).associateBy({ it.id!! }, { it.username })
 
-        return listPots.map { PotDto.from(it) }
+        return listPots.map { pot ->
+            val ownerName = ownersMap[pot.ownerId] ?: "알 수 없는 사용자"
+            PotDto.from(pot, ownerName)
+        }
     }
 
     @Transactional(readOnly = true)
     fun getMyPot(userId: Long): PotDto? {
         val participation = participantRepository.findByUserId(userId) ?: return null
         val pot = potRepository.findByIdOrNull(participation.potId) ?: return null
-        return PotDto.from(pot)
+        val owner = userRepository.findByIdOrNull(pot.ownerId)
+        val ownerName = owner ?.username ?: "알 수 없는 사용자"
+        return PotDto.from(pot, ownerName)
     }
 
     private fun updateActivePotIdUsers(
@@ -197,5 +205,43 @@ class PotService (
         potId: Long?
     ) {
         userRepository.updateActivePotIdForUsers(userIds, potId)
+    }
+
+    @Transactional
+    fun kickParticipant(
+        requestUserId: Long,
+        potId: Long,
+        targetUserId: Long
+    ) {
+        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+
+        // 요청자가 방장인지 확인
+        if (pot.ownerId != requestUserId) {
+            throw NotPotOwnerException()
+        }
+
+        // 자기 자신을 강퇴하려는 경우 차단
+        if (requestUserId == targetUserId) {
+            throw CannotKickSelfException()
+        }
+
+        // 강퇴 대상이 실제로 이 방에 있는지 확인
+        if (!participantRepository.existsByUserIdAndPotId(targetUserId, potId)) {
+            throw NotParticipatingException()
+        }
+
+        // 내보내기 진행
+        updateActivePotIdUsers(listOf(targetUserId), null)
+        val deletedCount = participantRepository.deleteByUserIdAndPotIdReturnCount(targetUserId, potId)
+        if(deletedCount == 0) throw NotParticipatingException()
+
+        val updated = potRepository.tryLeavePot(
+            potId = potId,
+            recruitingStatus = PotStatus.RECRUITING,
+            successStatus = PotStatus.SUCCESS
+        )
+        if (updated == 0) {
+            throw TemporarilyNotLeavePotException()
+        }
     }
 }
