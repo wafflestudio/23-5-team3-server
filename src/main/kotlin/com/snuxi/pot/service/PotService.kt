@@ -2,13 +2,17 @@ package com.snuxi.pot.service
 
 import com.snuxi.notification.service.PushService
 import com.snuxi.chat.repository.ChatMessageRepository
+import com.snuxi.chat.service.ChatBotService
 import com.snuxi.participant.entity.Participants
 import com.snuxi.participant.repository.ParticipantRepository
 import com.snuxi.pot.*
 import com.snuxi.pot.dto.CreatePotResponse
 import com.snuxi.pot.dto.PotDto
+import com.snuxi.pot.dto.core.LandmarkDto
 import com.snuxi.pot.entity.Pots
+import com.snuxi.pot.repository.LandmarkRepository
 import com.snuxi.pot.repository.PotRepository
+import com.snuxi.user.UserNotFoundException
 import com.snuxi.user.repository.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -24,6 +28,8 @@ class PotService (
     private val userRepository: UserRepository,
     private val pushService: PushService,
     private val chatMessageRepository: ChatMessageRepository,
+    private val chatBotService: ChatBotService,
+    private val landmarkRepository: LandmarkRepository
 ) {
     @Transactional
     fun createPot(
@@ -61,6 +67,12 @@ class PotService (
         )
 
         updateActivePotIdUsers(listOf(userId), save.id)
+
+        // 챗봇 메시지 전송
+        val username = userRepository.findById(userId).orElseThrow {
+            UserNotFoundException()
+        }.username
+        chatBotService.sendJoinMsg(save.id!!, userId, username)
 
         return CreatePotResponse(
             createdPotId = save.id!!
@@ -136,6 +148,12 @@ class PotService (
         }
         // user active pot id 또한 업데이트
         updateActivePotIdUsers(listOf(userId), potId)
+
+        // 챗봇 자동 메시지 전송
+        val username = userRepository.findById(userId).orElseThrow {
+            UserNotFoundException()
+        }.username
+        chatBotService.sendJoinMsg(potId, userId, username)
     }
 
     @Transactional
@@ -156,6 +174,12 @@ class PotService (
             successStatus = PotStatus.SUCCESS
         )
         if(updated == 0) throw TemporarilyNotLeavePotException()
+
+        // 모든 DB 작업 성공 후, 메시지 전송
+        val username = userRepository.findById(userId).orElseThrow {
+            UserNotFoundException()
+        }.username
+        chatBotService.sendLeaveMsg(potId, userId, username)
 
         // 업데이트가 정상적으로 적용되었다면(lock 성공), 업데이트된 새로운 방의 정보를 DB 에서 가지고온다
         val updatedPotInfo = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
@@ -258,5 +282,24 @@ class PotService (
 
         // 강퇴당한 유저에게 알림 전송
         pushService.sendNotificationToUser(targetUserId, "SNUXI 강퇴 알림", "참여 중이던 팟에서 강퇴되었습니다.")
+    }
+
+    @Transactional(readOnly = true)
+    fun generateKakaoDeepLink(
+        potId: Long,
+        userId: Long
+    ): String {
+        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+
+        // 방장이 아니면 딥링크를 만들 수 없다
+        if(pot.ownerId != userId) throw KakaoDeepLinkNotOwnerException()
+
+        val start = landmarkRepository.findByIdOrNull(pot.departureId) ?: throw RegionNotFoundException()
+        val end = landmarkRepository.findByIdOrNull(pot.destinationId) ?: throw RegionNotFoundException()
+
+        return LandmarkDto.generateKakaoLink(
+            origin = LandmarkDto.from(start),
+            dest = LandmarkDto.from(end)
+        )
     }
 }
