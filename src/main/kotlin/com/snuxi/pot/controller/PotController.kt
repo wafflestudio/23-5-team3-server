@@ -3,7 +3,6 @@ package com.snuxi.pot.controller
 import com.snuxi.pot.dto.CreatePotRequest
 import com.snuxi.pot.dto.CreatePotResponse
 import com.snuxi.pot.service.PotService
-import com.snuxi.pot.entity.Pots
 import com.snuxi.pot.dto.PotDto
 import com.snuxi.security.CustomOAuth2User
 import org.springframework.http.HttpStatus
@@ -13,7 +12,7 @@ import org.springframework.data.web.PageableDefault
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Page
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import java.time.LocalDateTime
+import com.snuxi.pot.dto.core.LandmarkDto
 
 @RestController
 class PotController (
@@ -91,4 +90,10 @@ class PotController (
     ): PotDto? {
         return potService.getMyPot(principal.userId)
     }
+
+    @GetMapping("/rooms/{roomId}/kakao-deep-link")
+    fun getKakaoDeepLink(
+        @PathVariable("roomId") roomId: Long,
+        @AuthenticationPrincipal principal: CustomOAuth2User
+    ): String = potService.generateKakaoDeepLink(roomId, principal.userId)
 }

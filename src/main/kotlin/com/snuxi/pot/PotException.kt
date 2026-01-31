@@ -80,3 +80,17 @@ class TemporarilyNotJoinPotException :
         httpStatusCode = HttpStatus.BAD_REQUEST,
         msg = "현재 해당 팟에 참여할 수 없습니다. 잠시 후 다시 시도해주세요"
     )
+
+class KakaoDeepLinkNotOwnerException :
+    PotException(
+        errorCode = 400,
+        httpStatusCode = HttpStatus.BAD_REQUEST,
+        msg = "카카오 택시 딥링크는 방장만 생성할 수 있습니다."
+    )
+
+class RegionNotFoundException :
+    PotException(
+        errorCode = 400,
+        httpStatusCode = HttpStatus.NOT_FOUND,
+        msg = "해당하는 출발지 또는 목적지를 찾을 수 없어 딥링크를 만들 수 없습니다."
+    )

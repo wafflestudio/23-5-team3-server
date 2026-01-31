@@ -39,6 +39,6 @@ class User(
 }
 
 enum class Role {
-    USER, ADMIN
+    USER, ADMIN, CHATBOT
 }
 
