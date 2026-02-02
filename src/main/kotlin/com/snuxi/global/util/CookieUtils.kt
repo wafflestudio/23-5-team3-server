@@ -15,6 +15,7 @@ object CookieUtils {
     fun addCookie(response: HttpServletResponse, name: String, value: String, maxAge: Int) {
         val cookie = Cookie(name, value)
         cookie.path = "/"
+        cookie.domain = ".snuxi.com"
         cookie.isHttpOnly = true
         cookie.maxAge = maxAge
         cookie.secure = true
@@ -26,6 +27,7 @@ object CookieUtils {
         request.cookies?.find { it.name == name }?.let {
             val cookie = Cookie(name, null)
             cookie.path = "/"
+            cookie.domain = ".snuxi.com"
             cookie.maxAge = 0
             response.addCookie(cookie)
         }
