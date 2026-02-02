@@ -21,4 +21,14 @@ class ChatMessageController (
         val userId = currentUserIdResolver.getCurrentUserId()
         return chatMessageService.getMessages(potId, userId, cursor, size)
     }
+
+    // for debug
+    @GetMapping("/messages/count")
+    fun countMessages(
+        @PathVariable("roomId") potId: Long
+    ): Map<String, Long> {
+        val count = chatMessageService.countMessages(potId)
+        return mapOf("count" to count)
+    }
+
 }

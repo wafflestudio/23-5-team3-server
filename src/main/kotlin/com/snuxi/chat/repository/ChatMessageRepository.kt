@@ -24,4 +24,8 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
         potId: Long,
         lastReadMessageId: Long
     ): Long
+
+    // for debug
+    fun countByPotId(potId: Long): Long
+
 }
