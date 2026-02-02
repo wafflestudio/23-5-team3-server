@@ -35,7 +35,7 @@ server:
   servlet:
     session:
       cookie:
-        domain: .snuxi.com
+        domain: snuxi.com
         same-site: none
         secure: true
         http-only: true
