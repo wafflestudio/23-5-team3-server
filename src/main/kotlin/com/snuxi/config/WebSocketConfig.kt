@@ -37,6 +37,7 @@ class WebSocketConfig(
                 "https://snuxi.com"
             )
             .withSockJS()
+            .setSessionCookieNeeded(false)
     }
 
     // 추가로, 해당 팟 외부 사람들은 메시지를 볼 수 없게 하기위해

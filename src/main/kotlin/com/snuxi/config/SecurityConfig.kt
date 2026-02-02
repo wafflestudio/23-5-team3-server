@@ -47,8 +47,8 @@ class SecurityConfig(
                     "/swagger-ui/**",
                     "/v3/api-docs/**",
                     "/maps/landmarks",
-                    "/rooms/search",
-                    "/ws/**").permitAll()
+                    "/rooms/search").permitAll()
+                it.requestMatchers("/ws/**").authenticated() // 로그인 유저만 웹소켓 생성 가능
                 it.anyRequest().authenticated()
             }
             .oauth2Login {
