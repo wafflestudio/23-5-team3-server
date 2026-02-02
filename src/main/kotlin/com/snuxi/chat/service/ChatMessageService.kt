@@ -61,4 +61,12 @@ class ChatMessageService (
             readStatuses = readStatuses
         )
     }
+
+
+    // for debug
+    @Transactional(readOnly = true)
+    fun countMessages(potId: Long): Long {
+        return chatMessageRepository.countByPotId(potId)
+    }
+
 }
