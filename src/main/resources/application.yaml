@@ -10,7 +10,7 @@ spring:
             client-id: ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope: [email, profile]
-            redirect-uri: "https://snuxi.com/login/oauth2/code/google"
+            redirect-uri: "https://api.snuxi.com/login/oauth2/code/google"
             authorization-grant-type: authorization_code
             client-name: Google
 
@@ -35,6 +35,7 @@ server:
   servlet:
     session:
       cookie:
+        domain: .snuxi.com
         same-site: none
         secure: true
         http-only: true

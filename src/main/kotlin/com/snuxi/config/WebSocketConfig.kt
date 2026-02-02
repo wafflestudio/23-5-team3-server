@@ -34,7 +34,7 @@ class WebSocketConfig(
                 "https://d2j21bk78krg0p.cloudfront.net",
                 "http://localhost:5173",
                 "https://d2c0wdnl0iqvgb.cloudfront.net",
-                "https://snuxi.com"
+                "https://snuxi.com" //프론트 배포 도메인
             )
             .withSockJS()
     }
