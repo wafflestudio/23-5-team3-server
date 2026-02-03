@@ -22,6 +22,12 @@ class UserController(
     private val userService: UserService,
     private val deviceService: DeviceService
 ) {
+    @GetMapping("/id")
+    fun getCurrentUserId(
+        @AuthenticationPrincipal
+        customOAuth2User: CustomOAuth2User
+    ): Long = customOAuth2User.userId
+
     @GetMapping("/profile")
     fun getMyProfile(
         @AuthenticationPrincipal
