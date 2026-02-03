@@ -49,6 +49,7 @@ class SecurityConfig(
                     "/maps/landmarks",
                     "/rooms/search").permitAll()
                 it.requestMatchers("/ws/**").authenticated() // 로그인 유저만 웹소켓 생성 가능
+                it.requestMatchers("/admin/**").hasRole("ADMIN") //관리자 권한 필요
                 it.anyRequest().authenticated()
             }
             .oauth2Login {
