@@ -12,6 +12,11 @@ jobs:
 
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      
+      - name: Create Firebase Service Account Key
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}" | base64 --decode > src/main/resources/serviceAccountKey.json
 
       - name: Build and Push Docker Image
         run: |
