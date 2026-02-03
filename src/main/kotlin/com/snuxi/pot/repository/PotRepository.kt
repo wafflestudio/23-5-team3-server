@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.time.LocalDateTime
 
 interface PotRepository : JpaRepository<Pots, Long> {
     fun findAllByDepartureIdAndDestinationIdAndStatusOrderByDepartureTimeAsc(
@@ -73,4 +74,10 @@ interface PotRepository : JpaRepository<Pots, Long> {
         @Param("recruiting") recruitingStatus: PotStatus,
         @Param("success") successStatus: PotStatus
     ): Int
+
+    fun findAllByDepartureTimeBetweenAndStatusIn(
+        start: LocalDateTime,
+        end: LocalDateTime,
+        statuses: Collection<PotStatus>
+    ): List<Pots>
 }
