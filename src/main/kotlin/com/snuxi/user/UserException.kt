@@ -30,6 +30,11 @@ class UserNotFoundException : UserException(
     httpStatusCode = HttpStatus.NOT_FOUND,
     msg = "해당 유저를 찾을 수 없습니다."
 )
+class ReportNotFoundException : UserException(
+    errorCode = 0,
+    httpStatusCode = HttpStatus.NOT_FOUND,
+    msg = "해당 신고 내역을 찾을 수 없습니다."
+)
 
 class SuspendedUserException(
     msg: String
