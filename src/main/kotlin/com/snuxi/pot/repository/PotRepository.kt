@@ -39,37 +39,37 @@ interface PotRepository : JpaRepository<Pots, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(
         """
-        UPDATE Pots p
-        SET p.currentCount = p.currentCount + 1,
-            p.status = CASE 
-                WHEN p.currentCount + 1 >= p.minCapacity THEN :successStatus 
-                ELSE p.status
-            END 
-        WHERE p.id = :potId
-        AND p.currentCount < p.maxCapacity
-    """
+    UPDATE Pots p
+    SET p.status = CASE 
+            WHEN p.currentCount - 1 < p.minCapacity THEN :recruitingStatus
+            ELSE p.status
+        END,
+        p.currentCount = p.currentCount - 1
+    WHERE p.id = :potId
+    AND p.currentCount > 0
+"""
     )
-    fun tryJoinPot(
+    fun tryLeavePot(
         @Param("potId") potId: Long,
-        @Param("successStatus") successStatus: PotStatus
+        @Param("recruitingStatus") recruitingStatus: PotStatus
     ): Int
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(
         """
-        UPDATE Pots p
-        SET p.currentCount = p.currentCount - 1,
-            p.status = CASE 
-                WHEN p.currentCount - 1 < p.minCapacity THEN :recruitingStatus
-                ELSE p.status
-            END 
-        WHERE p.id = :potId
-        AND p.currentCount > 0
-    """
+    UPDATE Pots p
+    SET p.status = CASE 
+            WHEN p.currentCount + 1 >= p.minCapacity THEN :successStatus 
+            ELSE p.status
+        END,
+        p.currentCount = p.currentCount + 1
+    WHERE p.id = :potId
+    AND p.currentCount < p.maxCapacity
+"""
     )
-    fun tryLeavePot(
+    fun tryJoinPot(
         @Param("potId") potId: Long,
-        @Param("recruitingStatus") recruitingStatus: PotStatus
+        @Param("successStatus") successStatus: PotStatus
     ): Int
 
     fun findAllByDepartureTimeBetweenAndStatusIn(
