@@ -27,5 +27,18 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
 
     // for debug
     fun countByPotId(potId: Long): Long
+    
+    // 이전 50개 + 본 채팅 1개 = 51개 가져오기
+    fun findByPotIdAndIdLessThanEqualOrderByIdDesc(
+        potId: Long,
+        id: Long,
+        pageable: Pageable
+    ): Page<ChatMessage>
 
+    // 본 채팅 이후 50개 가져오기
+    fun findByPotIdAndIdGreaterThanOrderByIdAsc(
+        potId: Long,
+        id: Long,
+        pageable: Pageable
+    ): Page<ChatMessage>
 }

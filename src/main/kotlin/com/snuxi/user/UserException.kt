@@ -35,6 +35,11 @@ class ReportNotFoundException : UserException(
     httpStatusCode = HttpStatus.NOT_FOUND,
     msg = "해당 신고 내역을 찾을 수 없습니다."
 )
+class CannotFindChatException : UserException(
+    errorCode = 0,
+    httpStatusCode = HttpStatus.NOT_FOUND,
+    msg = "해당 채팅 내역을 찾을 수 없습니다."
+)
 
 class SuspendedUserException(
     msg: String
