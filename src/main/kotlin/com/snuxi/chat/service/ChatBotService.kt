@@ -100,7 +100,9 @@ class ChatBotService (
             potId = saved.potId,
             senderId = saved.senderId,
             text = saved.text,
-            datetimeSendAt = saved.datetimeSendAt
+            datetimeSendAt = saved.datetimeSendAt,
+            senderUsername = BOT_USERNAME,
+            senderProfileImageUrl = null
         )
 
         // 메시지 브로드캐스트
