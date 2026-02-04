@@ -20,4 +20,6 @@ interface ReportedRepository : JpaRepository<Reported, Long> {
 
     // 특정 유저의 신고당한 내역 모아보기
     fun findAllByReportedUserIdOrderByReportedAtDesc(reportedUserId: Long, pageable: Pageable): Page<Reported>
+
+    fun countByIsProcessed(isProcessed: Boolean): Long
 }
