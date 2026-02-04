@@ -5,6 +5,7 @@ import com.snuxi.chat.dto.ChatMessageItemDto
 import com.snuxi.chat.dto.ChatMessagePageDto
 import com.snuxi.chat.repository.ChatMessageRepository
 import com.snuxi.participant.repository.ParticipantRepository
+import com.snuxi.user.repository.UserRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class ChatMessageService (
     private val chatMessageRepository: ChatMessageRepository,
-    private val participantRepository: ParticipantRepository
+    private val participantRepository: ParticipantRepository,
+    private val userRepository: UserRepository
 ) {
     @Transactional(readOnly = true)
     fun getMessages(
@@ -35,14 +37,22 @@ class ChatMessageService (
             chatMessageRepository.findByPotIdAndIdLessThanOrderByIdDesc(potId, cursor, pageable)
         }
 
+        val senderIds = page.content.map { it.senderId }.distinct()
+        val users = userRepository.findAllById(senderIds)
+        val userMap = users.associateBy { it.id!! }
+
         // Page<ChatMessage> -> List<ChatMessageItemDto> 변환
-        val items = page.content.map {
+        val items = page.content.map { msg ->
+            val u = userMap[msg.senderId]
+
             ChatMessageItemDto(
-                id = it.id!!,
-                potId = it.potId,
-                senderId = it.senderId,
-                text = it.text,
-                datetimeSendAt = it.datetimeSendAt
+                id = msg.id!!,
+                potId = msg.potId,
+                senderId = msg.senderId,
+                text = msg.text,
+                datetimeSendAt = msg.datetimeSendAt,
+                senderUsername = u?.username ?: "unknown",
+                senderProfileImageUrl = u?.profileImageUrl
             )
         }
 

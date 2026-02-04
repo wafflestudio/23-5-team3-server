@@ -54,7 +54,9 @@ class ChatRealTimeService (
             potId = saved.potId,
             senderId = saved.senderId,
             text = saved.text,
-            datetimeSendAt = saved.datetimeSendAt
+            datetimeSendAt = saved.datetimeSendAt,
+            senderUsername = sender.username,
+            senderProfileImageUrl = sender.profileImageUrl
         )
         // broadcast
         simpMessagingTemplate.convertAndSend("/sub/rooms/$roomId", itemDto)
