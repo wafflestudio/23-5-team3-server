@@ -133,7 +133,7 @@ class PotService (
             potId = potId,
             successStatus = PotStatus.SUCCESS
         )
-        if(updated == 0) throw PotFullException()
+        if (updated == 0) throw PotFullException()
 
         //업뎃 후 팟 상태 확인하고 SUCCESS 시 알림 발송
         val potAfterJoin = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
@@ -171,7 +171,7 @@ class PotService (
             potId = potId,
             recruitingStatus = PotStatus.RECRUITING
         )
-        if(updated == 0) throw TemporarilyNotLeavePotException()
+        if (updated == 0) throw TemporarilyNotLeavePotException()
 
         // 모든 DB 작업 성공 후, 메시지 전송
         val username = userRepository.findById(userId).orElseThrow {
