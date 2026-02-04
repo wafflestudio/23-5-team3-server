@@ -11,6 +11,9 @@ import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 import org.springframework.security.config.Customizer
+import org.springframework.security.core.session.SessionRegistry
+import org.springframework.security.core.session.SessionRegistryImpl
+import org.springframework.security.web.session.HttpSessionEventPublisher
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
@@ -73,8 +76,13 @@ class SecurityConfig(
                     response.sendError(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
                 }
             }
+            .sessionManagement {
+                it.maximumSessions(-1)
+                    .sessionRegistry(sessionRegistry())
+            }
         return http.build()
     }
+
 
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
@@ -92,6 +100,18 @@ class SecurityConfig(
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
+    }
+
+    // 세션 접속자 명부
+    @Bean
+    fun sessionRegistry(): SessionRegistry {
+        return SessionRegistryImpl()
+    }
+
+    // 세션 이벤트 리스너
+    @Bean
+    fun httpSessionEventPublisher(): HttpSessionEventPublisher {
+        return HttpSessionEventPublisher()
     }
 
 
