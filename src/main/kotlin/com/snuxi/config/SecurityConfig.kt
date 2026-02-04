@@ -41,6 +41,7 @@ class SecurityConfig(
                 it.requestMatchers(
                     "/",
                     "/login",
+                    "/terms/**",
                     "/error",
                     "/maps/landmarks",
                     "/rooms/search",
