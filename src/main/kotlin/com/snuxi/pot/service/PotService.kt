@@ -205,16 +205,17 @@ class PotService (
         val targetStatuses = listOf(PotStatus.RECRUITING, PotStatus.SUCCESS)
         val listPots = when {
             departureId == null && destinationId == null ->
-                potRepository.findAllByStatusInOrderByDepartureTimeAsc(targetStatuses, pageable)
+                potRepository.findAvailableAll(targetStatuses, pageable)
 
             departureId == null && destinationId != null ->
-                potRepository.findAllByDestinationIdAndStatusInOrderByDepartureTimeAsc(destinationId, targetStatuses, pageable)
+                // findAvailableAll을 findAvailableByDestination으로 변경
+                potRepository.findAvailableByDestination(destinationId, targetStatuses, pageable)
 
             departureId != null && destinationId == null ->
-                potRepository.findAllByDepartureIdAndStatusInOrderByDepartureTimeAsc(departureId, targetStatuses, pageable)
+                potRepository.findAvailableByDeparture(departureId, targetStatuses, pageable)
 
             else ->
-                potRepository.findAllByDepartureIdAndDestinationIdAndStatusInOrderByDepartureTimeAsc(
+                potRepository.findAvailableWithDest(
                     departureId!!, destinationId!!, targetStatuses, pageable)
         }
         val ownerIds = listPots.content.map { it.ownerId }.distinct()

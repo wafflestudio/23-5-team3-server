@@ -11,27 +11,54 @@ import org.springframework.data.repository.query.Param
 import java.time.LocalDateTime
 
 interface PotRepository : JpaRepository<Pots, Long> {
-    fun findAllByDepartureIdAndDestinationIdAndStatusInOrderByDepartureTimeAsc (
-        departureId: Long,
-        destinationId: Long,
-        statuses: Collection<PotStatus>,
+    @Query("""
+        SELECT p FROM Pots p 
+        WHERE p.departureId = :depId AND p.destinationId = :destId 
+        AND p.status IN :statuses 
+        AND p.currentCount < p.maxCapacity
+        ORDER BY p.departureTime ASC
+    """)
+    fun findAvailableWithDest(
+        @Param("depId") departureId: Long,
+        @Param("destId") destinationId: Long,
+        @Param("statuses") statuses: Collection<PotStatus>,
         pageable: Pageable
     ): Page<Pots>
 
-    fun findAllByStatusInOrderByDepartureTimeAsc(
-        statuses: Collection<PotStatus>,
+    @Query("""
+        SELECT p FROM Pots p 
+        WHERE p.status IN :statuses 
+        AND p.currentCount < p.maxCapacity
+        ORDER BY p.departureTime ASC
+    """)
+    fun findAvailableAll(
+        @Param("statuses") statuses: Collection<PotStatus>,
         pageable: Pageable
     ): Page<Pots>
 
-    fun findAllByDestinationIdAndStatusInOrderByDepartureTimeAsc(
-        destinationId: Long,
-        statuses: Collection<PotStatus>,
+    @Query("""
+        SELECT p FROM Pots p 
+        WHERE p.destinationId = :destId 
+        AND p.status IN :statuses 
+        AND p.currentCount < p.maxCapacity
+        ORDER BY p.departureTime ASC
+    """)
+    fun findAvailableByDestination(
+        @Param("destId") destinationId: Long,
+        @Param("statuses") statuses: Collection<PotStatus>,
         pageable: Pageable
     ): Page<Pots>
 
-    fun findAllByDepartureIdAndStatusInOrderByDepartureTimeAsc(
-        departureId: Long,
-        statuses: Collection<PotStatus>,
+    @Query("""
+        SELECT p FROM Pots p 
+        WHERE p.departureId = :depId 
+        AND p.status IN :statuses 
+        AND p.currentCount < p.maxCapacity
+        ORDER BY p.departureTime ASC
+    """)
+    fun findAvailableByDeparture(
+        @Param("depId") departureId: Long,
+        @Param("statuses") statuses: Collection<PotStatus>,
         pageable: Pageable
     ): Page<Pots>
 
