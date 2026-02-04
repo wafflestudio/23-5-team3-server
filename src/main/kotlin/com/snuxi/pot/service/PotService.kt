@@ -131,7 +131,6 @@ class PotService (
         // 원자적 update 방식 사용
         val updated = potRepository.tryJoinPot(
             potId = potId,
-            recruitingStatus = PotStatus.RECRUITING,
             successStatus = PotStatus.SUCCESS
         )
         if(updated == 0) throw PotFullException()
@@ -170,8 +169,7 @@ class PotService (
         // 원자적 update
         val updated = potRepository.tryLeavePot(
             potId = potId,
-            recruitingStatus = PotStatus.RECRUITING,
-            successStatus = PotStatus.SUCCESS
+            recruitingStatus = PotStatus.RECRUITING
         )
         if(updated == 0) throw TemporarilyNotLeavePotException()
 
@@ -204,30 +202,20 @@ class PotService (
         destinationId: Long?,
         pageable: Pageable
     ): Page<PotDto> {
+        val targetStatuses = listOf(PotStatus.RECRUITING, PotStatus.SUCCESS)
         val listPots = when {
-            departureId == null && destinationId == null -> potRepository.findAllByStatusOrderByDepartureTimeAsc(
-                PotStatus.RECRUITING,
-                pageable
-            )
+            departureId == null && destinationId == null ->
+                potRepository.findAllByStatusInOrderByDepartureTimeAsc(targetStatuses, pageable)
 
-            departureId == null && destinationId != null -> potRepository.findAllByDestinationIdAndStatusOrderByDepartureTimeAsc(
-                destinationId,
-                PotStatus.RECRUITING,
-                pageable
-            )
+            departureId == null && destinationId != null ->
+                potRepository.findAllByDestinationIdAndStatusInOrderByDepartureTimeAsc(destinationId, targetStatuses, pageable)
 
-            departureId != null && destinationId == null -> potRepository.findAllByDepartureIdAndStatusOrderByDepartureTimeAsc(
-                departureId,
-                PotStatus.RECRUITING,
-                pageable
-            )
+            departureId != null && destinationId == null ->
+                potRepository.findAllByDepartureIdAndStatusInOrderByDepartureTimeAsc(departureId, targetStatuses, pageable)
 
-            else -> potRepository.findAllByDepartureIdAndDestinationIdAndStatusOrderByDepartureTimeAsc(
-                departureId!!,
-                destinationId!!,
-                PotStatus.RECRUITING,
-                pageable
-            )
+            else ->
+                potRepository.findAllByDepartureIdAndDestinationIdAndStatusInOrderByDepartureTimeAsc(
+                    departureId!!, destinationId!!, targetStatuses, pageable)
         }
         val ownerIds = listPots.content.map { it.ownerId }.distinct()
         val ownersMap = userRepository.findAllById(ownerIds).associateBy({ it.id!! }, { it.username })
@@ -274,8 +262,7 @@ class PotService (
 
         val updated = potRepository.tryLeavePot(
             potId = potId,
-            recruitingStatus = PotStatus.RECRUITING,
-            successStatus = PotStatus.SUCCESS
+            recruitingStatus = PotStatus.RECRUITING
         )
 
         if (updated == 0) throw TemporarilyNotLeavePotException()
