@@ -85,6 +85,10 @@ class AdminService(
             RouteRankDto("${it[0]} → ${it[1]}", it[2] as Long)
         }
 
+        val reportCounts = reportedRepository.countReportsByReason().associate {
+            it[0] as com.snuxi.user.model.ReportReason to it[1] as Long
+        }
+
         return AdminStatsResponse(
             summary = summary,
             dailyTrends = dailyTrends,
@@ -92,7 +96,7 @@ class AdminService(
             analysis = StatsAnalysis(
                 successRate = if(potRepository.count() > 0) (summary.totalSuccessPots.toDouble() / potRepository.count() * 100) else 0.0,
                 topRoutes = topRoutes,
-                reportReasons = reportedRepository.findAll().groupBy { it.reason }.mapValues { it.value.size.toLong() },
+                reportReasons = reportCounts,
                 suspendedUsers = userRepository.findBySuspendedUntilAfter(now).map { it.username }
             )
         )
