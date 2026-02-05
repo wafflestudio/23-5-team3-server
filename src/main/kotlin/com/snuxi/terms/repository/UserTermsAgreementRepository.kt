@@ -13,4 +13,6 @@ interface UserTermsAgreementRepository : JpaRepository<UserTermsAgreement, Long>
         userId: Long,
         termsVersion: BigDecimal
     ): Boolean
+
+    fun deleteAllByUserId(userId: Long)
 }

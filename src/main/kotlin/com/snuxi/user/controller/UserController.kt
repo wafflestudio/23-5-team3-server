@@ -2,12 +2,17 @@ package com.snuxi.user.controller
 
 import com.snuxi.notification.service.DeviceService
 import com.snuxi.security.CustomOAuth2User
+import com.snuxi.terms.service.UserTermsAgreementService
 import com.snuxi.user.dto.UserResponse
 import com.snuxi.user.dto.UserUpdateRequest
 import com.snuxi.user.service.UserService
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.core.user.OAuth2User
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -20,7 +25,8 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/user")
 class UserController(
     private val userService: UserService,
-    private val deviceService: DeviceService
+    private val deviceService: DeviceService,
+    private val userTermsAgreementService: UserTermsAgreementService
 ) {
     @GetMapping("/id")
     fun getCurrentUserId(
@@ -70,4 +76,24 @@ class UserController(
         val updatedProfile = userService.updateUsername(email, request.username)
         return ResponseEntity.ok(updatedProfile)
     }
+
+    @PostMapping("/withdraw")
+    fun withdraw(
+        @AuthenticationPrincipal user: CustomOAuth2User,
+        request: HttpServletRequest,
+        response: HttpServletResponse
+    ): ResponseEntity<String> {
+        val userId = user.userId
+
+        userTermsAgreementService.revokeAllAgreements(userId)
+        userService.withdraw(userId)
+
+        val auth = SecurityContextHolder.getContext().authentication
+        if (auth != null) {
+            SecurityContextLogoutHandler().logout(request, response, auth)
+        }
+
+        return ResponseEntity.ok("탈퇴(약관 동의 철회)가 완료되었습니다.")
+    }
+
 }
