@@ -2,13 +2,16 @@ package com.snuxi.terms.service
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.util.Date
+import com.snuxi.terms.repository.UserTermsAgreementRepository
 
 @Service
 class UserTermsAgreementService (
+    private val userTermsAgreementRepository: UserTermsAgreementRepository,
     @Value("\${app.terms-jwt.secret}")
     private val secret: String,
     @Value("\${app.terms-jwt.ttl-minutes}")
@@ -61,6 +64,11 @@ class UserTermsAgreementService (
         } catch (e: Exception) {
             null
         }
+    }
+    @Transactional
+    fun revokeAllAgreements(userId: Long) {
+        // 해당 유저의 모든 약관 동의 내역 삭제
+        userTermsAgreementRepository.deleteAllByUserId(userId)
     }
 }
 

@@ -119,5 +119,5 @@ interface PotRepository : JpaRepository<Pots, Long> {
 
     fun countByStatus(status: PotStatus): Long
     fun countByCreatedAtBetween(start: Instant, end: Instant): Long
-
+    fun deleteAllByOwnerId(userId: Long)
 }

@@ -51,4 +51,6 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
         @Param("potId") potId: Long,
         @Param("messageId") messageId: Long
     )
+
+    fun deleteAllByUserId(userId: Long)
 }
