@@ -2,12 +2,14 @@ package com.snuxi.pot.repository
 
 import com.snuxi.pot.PotStatus
 import com.snuxi.pot.entity.Pots
+import com.snuxi.pot.model.Landmark
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.time.Instant
 import java.time.LocalDateTime
 
 interface PotRepository : JpaRepository<Pots, Long> {
@@ -104,4 +106,18 @@ interface PotRepository : JpaRepository<Pots, Long> {
         end: LocalDateTime,
         statuses: Collection<PotStatus>
     ): List<Pots>
+
+    @Query("""
+        SELECT l1.name, l2.name, COUNT(p) 
+        FROM Pots p 
+        JOIN Landmark l1 ON p.departureId = l1.id 
+        JOIN Landmark l2 ON p.destinationId = l2.id 
+        GROUP BY l1.name, l2.name 
+        ORDER BY COUNT(p) DESC
+    """)
+    fun findTopRoutes(pageable: Pageable): List<Array<Any>>
+
+    fun countByStatus(status: PotStatus): Long
+    fun countByCreatedAtBetween(start: Instant, end: Instant): Long
+
 }

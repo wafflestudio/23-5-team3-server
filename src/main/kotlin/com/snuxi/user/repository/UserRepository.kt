@@ -4,6 +4,8 @@ import com.snuxi.user.model.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import java.time.Instant
+import java.time.LocalDateTime
 
 interface UserRepository: JpaRepository<User, Long> {
     fun findByEmail(email: String): User?
@@ -14,5 +16,6 @@ interface UserRepository: JpaRepository<User, Long> {
         userIds: List<Long>,
         potId: Long?
     ): Int
-
+    fun countByCreatedAtBetween(start: Instant, end: Instant): Long
+    fun findBySuspendedUntilAfter(now: LocalDateTime): List<User>
 }
