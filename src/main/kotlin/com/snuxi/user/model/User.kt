@@ -25,7 +25,7 @@ class User(
     var profileImageUrl: String? = null,
 
     @Enumerated(EnumType.STRING)
-    val role: Role = Role.USER,
+    var role: Role = Role.USER,
 
     val activePotId: Long? = null,
 
