@@ -6,13 +6,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException
-import org.springframework.security.oauth2.core.OAuth2Error
 import com.snuxi.security.CustomOAuth2User
+import com.snuxi.user.NotSnuMailException
 import com.snuxi.user.SuspendedUserException
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Collections
 
 @Service
@@ -26,18 +26,18 @@ class GoogleOAuth2UserService(
 
         val email = attributes["email"] as String
         if (!email.endsWith("@snu.ac.kr")) {
-            throw OAuth2AuthenticationException(
-                OAuth2Error("Email is not valid"),
-                "서울대학교(@snu.ac.kr) 계정만 로그인 가능합니다."
-            )
+            throw NotSnuMailException()
         }
 
         val user = getOrSave(attributes)
 
         // 정지된 유저인지 체크
         if (user.suspendedUntil != null && user.suspendedUntil!!.isAfter(LocalDateTime.now())) {
+            val formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분")
+            val formattedDate = user.suspendedUntil!!.format(formatter)
+
             throw SuspendedUserException(
-                "계정이 정지되었습니다. (누적 ${user.suspensionCount}회, ${user.suspendedUntil}까지 이용 불가)"
+                "계정이 정지되었습니다. ($formattedDate 까지 이용이 제한됩니다)"
             )
         }
 
