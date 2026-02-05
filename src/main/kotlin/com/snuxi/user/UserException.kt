@@ -48,3 +48,10 @@ class SuspendedUserException(
     msg
 )
 
+class NotSnuMailException(
+    msg: String = "서울대학교(@snu.ac.kr) 계정만 로그인 가능합니다."
+) : OAuth2AuthenticationException(
+    OAuth2Error("not_snu_mail"),
+    msg
+)
+

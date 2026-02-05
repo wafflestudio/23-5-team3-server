@@ -22,7 +22,8 @@ class SecurityConfig(
     val googleOAuth2UserService: GoogleOAuth2UserService,
     val httpCookieOAuth2AuthorizationRequestRepository: HttpCookieOAuth2AuthorizationRequestRepository,
     val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
-    val customLogoutSuccessHandler: CustomLogoutSuccessHandler
+    val customLogoutSuccessHandler: CustomLogoutSuccessHandler,
+    val customAuthenticationFailureHandler: CustomAuthenticationFailureHandler
 
 ) {
     @Bean
@@ -66,6 +67,7 @@ class SecurityConfig(
                         endpoint.userService(googleOAuth2UserService)
                 }
                 it.successHandler(oAuth2AuthenticationSuccessHandler)
+                it.failureHandler(customAuthenticationFailureHandler)
             }
             .logout {
                 it.logoutRequestMatcher(AntPathRequestMatcher("/logout"))
