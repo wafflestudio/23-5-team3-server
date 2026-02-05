@@ -28,7 +28,7 @@ class ChatMessageService (
         if(!isParticipating) throw NonParticipatingThisPotException()
 
         // 사용자 인증 완료, 채팅 내역을 가져온다
-        val pageable = PageRequest.of(0, size.coerceIn(1, 20))
+        val pageable = PageRequest.of(0, size.coerceIn(1, 100))
 
         // 커서 기반 조회
         val page = if(cursor == null) {
