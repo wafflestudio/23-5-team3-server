@@ -45,7 +45,7 @@ class ChatRealTimeService (
                 potId = roomId,
                 senderId = userId,
                 text = trimText,
-                datetimeSendAt = LocalDateTime.now()
+                datetimeSendAt = LocalDateTime.now().plusHours(9)
             )
         )
 
