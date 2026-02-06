@@ -31,9 +31,9 @@ class CustomAuthenticationFailureHandler : SimpleUrlAuthenticationFailureHandler
         val encodedMsg = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8)
 
         // 3. 리다이렉트 URL 생성 (메인페이지 '/' 로 이동하면서 파라미터 전달)
+        // 도메인 변경 이슈로 절대 경로로 수정
         // 예: http://localhost:8080/?error=true&message=%EC%A0%95...
-        val targetUrl = UriComponentsBuilder.fromUriString("/")
-            .queryParam("error", "true")
+        val targetUrl = UriComponentsBuilder.fromUriString("https://snuxi.com/error")
             .queryParam("message", encodedMsg)
             .build()
             .toUriString()
