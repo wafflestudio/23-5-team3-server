@@ -108,11 +108,11 @@ interface PotRepository : JpaRepository<Pots, Long> {
     ): List<Pots>
 
     @Query("""
-        SELECT l1.name, l2.name, COUNT(p) 
+        SELECT l1.landmarkName, l2.landmarkName, COUNT(p) 
         FROM Pots p 
         JOIN Landmark l1 ON p.departureId = l1.id 
         JOIN Landmark l2 ON p.destinationId = l2.id 
-        GROUP BY l1.name, l2.name 
+        GROUP BY l1.landmarkName, l2.landmarkName
         ORDER BY COUNT(p) DESC
     """)
     fun findTopRoutes(pageable: Pageable): List<Array<Any>>
