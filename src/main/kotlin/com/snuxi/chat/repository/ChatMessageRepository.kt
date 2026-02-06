@@ -65,7 +65,7 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
         SELECT COUNT(c) FROM ChatMessage c 
         WHERE c.potId = :potId 
         AND c.id > :lastReadMessageId 
-        AND c.senderId != 0 
+        AND c.senderId != 7
     """)
     fun countUnreadMessagesExceptBot(
         @Param("potId") potId: Long,
