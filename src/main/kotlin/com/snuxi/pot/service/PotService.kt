@@ -218,6 +218,7 @@ class PotService (
 
             if (nextOwner != null) {
                 updatedPotInfo.ownerId = nextOwner.id!!
+                chatBotService.sendOwnerChangeMsg(potId, nextOwner.username)
             } else {
                 potRepository.delete(updatedPotInfo)
             }

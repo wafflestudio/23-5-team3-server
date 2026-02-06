@@ -118,4 +118,10 @@ class ChatBotService (
         val text = "${userName} 님이 강퇴되었습니다." // 멘트 수정 가능
         return sendMessage(roomId, text)
     }
+
+    @Transactional
+    fun sendOwnerChangeMsg(potId: Long, nextOwnerName: String): ChatMessageItemDto {
+        val text = "${nextOwnerName}님이 새로운 방장이 되었습니다."
+        return sendMessage(potId, text)
+    }
 }
