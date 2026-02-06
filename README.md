@@ -15,14 +15,14 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 - **기술적 의사결정**  
 
 ## 프로젝트 개요  
-### SNUXI 서비스  
+### 🚘 SNUXI 서비스  
 택시를 함께 탈 서울대학교 학우들을 모집하는 서비스입니다.  
 학교 메일 인증으로 인증된 구성원들과 함께 안전하고 경제적으로 등하교길을 이용하세요!
 
 ### 🗓️ 기간  
 2025.12 ~ 2026.02  
   
-### 개발자  
+### 👩🏻‍💻 개발자
 <br />
 
 | [김기환(BE)](https://github.com/LOV-ING-U) | [김용현(BE)](https://github.com/Mined2022) | [나규하(FE)](https://github.com/Daniel-Na118) | [이유리(BE)](https://github.com/colswap) | [이정연(FE)](https://github.com/jylee05) |
