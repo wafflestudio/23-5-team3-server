@@ -27,7 +27,7 @@ class PotNotificationScheduler(
         val upcomingPots = potRepository.findAllByDepartureTimeBetweenAndStatusIn(
             targetTimeStart,
             targetTimeEnd,
-            listOf(PotStatus.RECRUITING, PotStatus.SUCCESS)
+            listOf(PotStatus.SUCCESS)
         )
 
         upcomingPots.forEach { pot ->
