@@ -50,23 +50,37 @@ Client : https://github.com/wafflestudio/23-5-team3-web
     <img alt="AWS" src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white">
     <img alt="Nginx"  src="https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white&style=for-the-badge">
 </p>  
+
+### 협업 전략  
+#### Slack, Notion, Swagger 기반 API 명세 공유 및 아키텍처 구조 협의  
+https://www.notion.so/API-2ffe04be1b438100888be0685a7158ba?source=copy_link  
   
-#### 협업 전략  
-(대충 git, PR, slack, notion 등)
-    
+#### 주 단위 스프린트 및 Git, GitHub를 통한 PR 단위 코드 리뷰  
+https://api.snuxi.com/swagger-ui/index.html  
+  
 ## 아키텍처 구조(BE)   
 ![architecture](./img/snuxi.png)  
     
 ## 주요 기능  
 #### 1. 약관 동의와 학교 메일 인증 절차로 안전하게!  
+OAuth2 기반 학교 메일 로그인을 통해 인증된 구성원들끼리 택시팟을 이용할 수 있어요.
+![ability](./img/1.jpg)
    
-#### 2. 랜드마크 기반 출발, 도착지 지정으로 간편하게!  
+#### 2. 택시팟 생성은 랜드마크 기반 출발, 도착지 지정으로 간편하게!  
+학교 안, 서울대입구역, 낙성대역, 녹두까지! 학우들이 자주 사용하는 대표 지역으로 빠르게 이용해보세요.  
+![ability](./img/2.jpg)
   
 #### 3. 실시간 채팅으로 보다 빠르게!  
+WebSocket 기술을 기반으로 빠른 실시간 텍스트 채팅을 지원해요.  
+![ability](./img/3.jpg)
   
 #### 4. 부적절한 채팅은 No! 신고 기능으로 채팅방을 클린하게!  
+운영자가 채팅 내역을 모두 볼 수 있어요! 목적에 맞는 서비스 이용을 부탁드려요.  
+![ability](./img/4.jpg)
   
 ## 기술적 의사결정  
-#### 1. 백엔드 쪽 결정
-#### 2. 결정2  
-#### 3. 결정3....git pull
+#### 1. Kubernetes 대신 Nginx를 사용한 이유  
+
+#### 2. WebSocket 에서의 메시지 전송 동적 제어 및 인증 흐름  
+
+#### 3. 소셜 로그인 시 세션 방식을 선택한 이유  
