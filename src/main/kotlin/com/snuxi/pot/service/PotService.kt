@@ -125,13 +125,14 @@ class PotService (
                 // 1. 참여하려는 팟이 현재 참여 중인 팟과 같을 때
                 throw AlreadyJoinedThisPotException()
             } else {
-                // 2. 다른 팟에 이미 참여 중일 때 (기존 에러 유지)
+                // 2. 다른 팟에 이미 참여 중일 때
                 throw DuplicateParticipationException()
             }
         }
 
         // 팟이 없으면 예외 던짐
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+        val oldStatus = pot.status
 
         // join 성공 후, participant 정보 업데이트(실패시 예외 던져서 트랜잭션 롤백되게)
         try{
@@ -155,7 +156,7 @@ class PotService (
 
         //업뎃 후 팟 상태 확인하고 SUCCESS 시 알림 발송
         val potAfterJoin = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
-        if (potAfterJoin.status == PotStatus.SUCCESS) {
+        if (oldStatus == PotStatus.RECRUITING && potAfterJoin.status == PotStatus.SUCCESS) {
             val participantIds = participantRepository.findUserIdsByPotId(potId)
             pushService.sendNotificationToUsers(
                 participantIds,
