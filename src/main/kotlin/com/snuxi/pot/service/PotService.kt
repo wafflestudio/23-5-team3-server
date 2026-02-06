@@ -42,6 +42,9 @@ class PotService (
         minCapacity: Int,
         maxCapacity: Int
     ): CreatePotResponse {
+        val user = userRepository.findByIdOrNull(userId) ?: throw UserNotFoundException()
+        if (user.isSuspended()) throw SuspendedUserException("정지된 사용자는 팟을 생성할 수 없습니다.")
+
         if(minCapacity > maxCapacity) throw MinMaxReversedException()
         if(minCapacity < 2 || maxCapacity > 4) throw InvalidCountException()
         if(participantRepository.existsByUserId(userId)) throw DuplicateParticipationException()
@@ -111,6 +114,9 @@ class PotService (
 
     @Transactional
     fun joinPot(userId: Long, potId: Long){
+        val user = userRepository.findByIdOrNull(userId) ?: throw UserNotFoundException()
+        if (user.isSuspended()) throw SuspendedUserException("정지된 사용자는 팟에 참여할 수 없습니다.")
+
         // 이미 참여한 사람이 또 참여 불가
         if (participantRepository.existsByUserId(userId)) throw DuplicateParticipationException()
 
@@ -192,9 +198,18 @@ class PotService (
                 return
             }
 
-            // 1명 이상 남아있으면 방장 위임
-            val nextOwner = participantRepository.findFirstByPotIdOrderByJoinedAtAsc(potId)
-            if(nextOwner != null) updatedPotInfo.ownerId = nextOwner.userId
+            val participants = participantRepository.findByPotIdOrderByJoinedAtAsc(potId)
+
+            val nextOwner = participants.asSequence()
+                .mapNotNull { p -> userRepository.findByIdOrNull(p.userId) }
+                .filter { u -> !u.isSuspended() }
+                .firstOrNull()
+
+            if (nextOwner != null) {
+                updatedPotInfo.ownerId = nextOwner.id!!
+            } else {
+                potRepository.delete(updatedPotInfo)
+            }
         }
     }
 

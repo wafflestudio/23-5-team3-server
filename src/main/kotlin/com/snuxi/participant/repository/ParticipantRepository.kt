@@ -57,4 +57,6 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
 
     @Query("SELECT u FROM User u, Participants p WHERE u.id = p.userId AND p.potId = :potId")
     fun findUsersByPotId(@Param("potId") potId: Long): List<User>
+
+    fun findByPotIdOrderByJoinedAtAsc(potId: Long): List<Participants>
 }

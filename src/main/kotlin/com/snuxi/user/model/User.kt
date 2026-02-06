@@ -37,6 +37,10 @@ class User(
     @Column(name = "suspension_count")
     var suspensionCount: Int = 0
 ) {
+    fun isSuspended(): Boolean {
+        return suspendedUntil?.isAfter(LocalDateTime.now()) ?: false
+    }
+
     @CreatedDate
     var createdAt: Instant? = null
 

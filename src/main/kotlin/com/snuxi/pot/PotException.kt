@@ -94,3 +94,10 @@ class RegionNotFoundException :
         httpStatusCode = HttpStatus.NOT_FOUND,
         msg = "해당하는 출발지 또는 목적지를 찾을 수 없어 딥링크를 만들 수 없습니다."
     )
+
+class SuspendedUserException(message: String) :
+    PotException(
+        errorCode = 400,
+        httpStatusCode = HttpStatus.FORBIDDEN,
+        msg = "정지된 유저는 팟을 생성/참여할 수 없습니다."
+    )
