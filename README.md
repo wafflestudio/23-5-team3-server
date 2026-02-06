@@ -1,7 +1,7 @@
 # SNUXI - 서울대 학내 택시팟 모집 서비스  
 서울대 인근 지역에서 택시를 함께 탑승할 학우들을 모집해보세요!  
   
-**[🔗 배포 링크](https://www.snuxi.com)**  
+**[🔗 배포 링크](https://snuxi.com)**  
   
 **[GitHub Link]**  
   
