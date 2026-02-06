@@ -55,7 +55,7 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 #### Slack, Notion, Swagger 기반 API 명세 공유 및 아키텍처 구조 협의  
 https://www.notion.so/API-2ffe04be1b438100888be0685a7158ba?source=copy_link  
   
-#### 주 단위 스프린트 및 Git, GitHub를 통한 PR 단위 코드 리뷰  
+#### 주 단위 스프린트, 커밋 컨벤션 규칙 및 Git, GitHub를 통한 PR 단위 코드 리뷰  
 https://api.snuxi.com/swagger-ui/index.html  
   
 ## 아키텍처 구조(BE)   
