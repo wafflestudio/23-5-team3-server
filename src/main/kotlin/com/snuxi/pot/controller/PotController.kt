@@ -96,4 +96,13 @@ class PotController (
         @PathVariable("roomId") roomId: Long,
         @AuthenticationPrincipal principal: CustomOAuth2User
     ): String = potService.generateKakaoDeepLink(roomId, principal.userId)
+
+    @PatchMapping("/rooms/{roomId}/status")
+    fun togglePotStatus(
+        @AuthenticationPrincipal principal: CustomOAuth2User,
+        @PathVariable roomId: Long
+    ): ResponseEntity<PotDto> {
+        val updatedPot = potService.togglePotStatus(principal.userId, roomId)
+        return ResponseEntity.ok(updatedPot)
+    }
 }

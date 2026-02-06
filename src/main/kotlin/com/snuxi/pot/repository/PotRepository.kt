@@ -17,7 +17,8 @@ interface PotRepository : JpaRepository<Pots, Long> {
         SELECT p FROM Pots p 
         WHERE p.departureId = :depId AND p.destinationId = :destId 
         AND p.status IN :statuses 
-        AND p.currentCount < p.maxCapacity
+        AND p.currentCount < p.maxCapacity 
+        AND p.isLocked = false
         ORDER BY p.departureTime ASC
     """)
     fun findAvailableWithDest(
@@ -31,6 +32,7 @@ interface PotRepository : JpaRepository<Pots, Long> {
         SELECT p FROM Pots p 
         WHERE p.status IN :statuses 
         AND p.currentCount < p.maxCapacity
+        AND p.isLocked = false
         ORDER BY p.departureTime ASC
     """)
     fun findAvailableAll(
@@ -43,6 +45,7 @@ interface PotRepository : JpaRepository<Pots, Long> {
         WHERE p.destinationId = :destId 
         AND p.status IN :statuses 
         AND p.currentCount < p.maxCapacity
+        AND p.isLocked = false
         ORDER BY p.departureTime ASC
     """)
     fun findAvailableByDestination(
@@ -56,6 +59,7 @@ interface PotRepository : JpaRepository<Pots, Long> {
         WHERE p.departureId = :depId 
         AND p.status IN :statuses 
         AND p.currentCount < p.maxCapacity
+        AND p.isLocked = false
         ORDER BY p.departureTime ASC
     """)
     fun findAvailableByDeparture(
