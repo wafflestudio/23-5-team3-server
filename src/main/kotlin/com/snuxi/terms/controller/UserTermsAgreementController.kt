@@ -71,7 +71,11 @@ class UserTermsAgreementController (
             userId = requireNotNull(user.id),
             suspendedUntil = user.suspendedUntil,
             authorities = authorities,
-            attributes = emptyMap(),
+            attributes = mapOf(
+                "email" to payload.email,
+                "name" to (payload.name ?: "unknown"),
+                "picture" to payload.picture
+            ).filterValues { it != null } as Map<String, Any>,
             nameAttributeKey = "id"
         )
 
