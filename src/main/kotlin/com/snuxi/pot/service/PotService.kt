@@ -235,7 +235,7 @@ class PotService (
         val pot = potRepository.findByIdOrNull(participation.potId) ?: return null
         val owner = userRepository.findByIdOrNull(pot.ownerId)
         val ownerName = owner ?.username ?: "알 수 없는 사용자"
-        val unreadCount = chatMessageRepository.countByPotIdAndIdGreaterThan(
+        val unreadCount = chatMessageRepository.countUnreadMessagesExceptBot(
             pot.id!!,
             participation.lastReadMessageId
         )

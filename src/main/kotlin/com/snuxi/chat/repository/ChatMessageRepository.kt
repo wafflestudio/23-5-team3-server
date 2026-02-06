@@ -60,4 +60,16 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
         @Param("anonymousId") anonymousId: Long = 0L
     ): Int
 
+    // 봇(senderId = 0) 메시지는 제외하고 카운트
+    @Query("""
+        SELECT COUNT(c) FROM ChatMessage c 
+        WHERE c.potId = :potId 
+        AND c.id > :lastReadMessageId 
+        AND c.senderId != 0 
+    """)
+    fun countUnreadMessagesExceptBot(
+        @Param("potId") potId: Long,
+        @Param("lastReadMessageId") lastReadMessageId: Long
+    ): Long
+
 }
