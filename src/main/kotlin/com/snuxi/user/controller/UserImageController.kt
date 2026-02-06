@@ -1,5 +1,6 @@
 package com.snuxi.user.controller
 
+import com.snuxi.security.CustomOAuth2User
 import com.snuxi.user.service.UserImageService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -18,10 +19,10 @@ class UserImageController(
 ) {
     @PostMapping("/profile/picture", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun uploadProfileImage(
-        @AuthenticationPrincipal oAuth2User: OAuth2User,
+        @AuthenticationPrincipal customOAuth2User: CustomOAuth2User,
         @RequestParam("image") imageFile: MultipartFile
     ): ResponseEntity<String> {
-        val email = oAuth2User.attributes["email"] as String
+        val email = customOAuth2User.attributes["email"] as String
         val imageUrl = userImageService.uploadProfileImage(email, imageFile)
 
         return ResponseEntity.ok(imageUrl)
