@@ -8,6 +8,8 @@ import com.snuxi.security.CustomOAuth2User
 import com.snuxi.user.repository.UserRepository
 import com.snuxi.user.UserNotFoundException
 import com.snuxi.user.repository.ReportedRepository
+import com.snuxi.pot.service.PotService
+import com.snuxi.participant.repository.ParticipantRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.security.core.session.SessionRegistry
 import org.springframework.stereotype.Service
@@ -21,7 +23,9 @@ class AdminService(
     private val sessionRegistry: SessionRegistry,
     private val potRepository: PotRepository,
     private val chatMessageRepository: ChatMessageRepository,
-    private val reportedRepository: ReportedRepository
+    private val reportedRepository: ReportedRepository,
+    private val potService: PotService,
+    private val participantRepository: ParticipantRepository
 ) {
 
     @Transactional
@@ -33,6 +37,11 @@ class AdminService(
         // DB 업데이트 (정지 기간 & 횟수)
         user.suspendedUntil = LocalDateTime.now().plusDays(days)
         user.suspensionCount += 1
+        
+        //leavePot 실행. 정지 시 나가지도록 처리
+        participantRepository.findByUserId(targetUserId)?.let { participation ->
+            potService.leavePot(targetUserId, participation.potId)
+        }
 
         // 모든 접속자 명단 가져오기
         val principals = sessionRegistry.allPrincipals
