@@ -54,10 +54,10 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 #### 협업 전략  
 (대충 git, PR, slack, notion 등)
     
-### 아키텍처 구조  
-(그림 그리기)  
+## 아키텍처 구조(BE)   
+![architecture](./img/snuxi.png)  
     
-### 주요 기능  
+## 주요 기능  
 #### 1. 약관 동의와 학교 메일 인증 절차로 안전하게!  
    
 #### 2. 랜드마크 기반 출발, 도착지 지정으로 간편하게!  
@@ -66,7 +66,7 @@ Client : https://github.com/wafflestudio/23-5-team3-web
   
 #### 4. 부적절한 채팅은 No! 신고 기능으로 채팅방을 클린하게!  
   
-### 기술적 의사결정  
+## 기술적 의사결정  
 #### 1. 백엔드 쪽 결정
 #### 2. 결정2  
 #### 3. 결정3....
