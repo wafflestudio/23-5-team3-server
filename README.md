@@ -69,4 +69,4 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 ## 기술적 의사결정  
 #### 1. 백엔드 쪽 결정
 #### 2. 결정2  
-#### 3. 결정3....
+#### 3. 결정3....git pull
