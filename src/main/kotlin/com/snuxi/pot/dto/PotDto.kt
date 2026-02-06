@@ -17,10 +17,11 @@ data class PotDto(
     val estimatedFee: Int,
     val status: PotStatus,
     val unreadCount: Long = 0,
+    val totalUnreadCount: Long = 0,
     val isLocked: Boolean = false
 ) {
     companion object {
-        fun from(entity: Pots, ownerName: String, unreadCount: Long = 0) = PotDto(
+        fun from(entity: Pots, ownerName: String, unreadCount: Long = 0, totalUnreadCount: Long = 0) = PotDto(
             id = entity.id!!,
             ownerId = entity.ownerId,
             ownerName = ownerName,
@@ -33,6 +34,7 @@ data class PotDto(
             estimatedFee = entity.estimatedFee,
             status = entity.status,
             unreadCount = unreadCount,
+            totalUnreadCount = totalUnreadCount,
             isLocked = entity.isLocked
         )
     }
