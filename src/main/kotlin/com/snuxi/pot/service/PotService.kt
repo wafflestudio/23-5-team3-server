@@ -118,7 +118,17 @@ class PotService (
         if (user.isSuspended()) throw SuspendedUserException("정지된 사용자는 팟에 참여할 수 없습니다.")
 
         // 이미 참여한 사람이 또 참여 불가
-        if (participantRepository.existsByUserId(userId)) throw DuplicateParticipationException()
+        val existingParticipation = participantRepository.findByUserId(userId)
+
+        if (existingParticipation != null) {
+            if (existingParticipation.potId == potId) {
+                // 1. 참여하려는 팟이 현재 참여 중인 팟과 같을 때
+                throw AlreadyJoinedThisPotException()
+            } else {
+                // 2. 다른 팟에 이미 참여 중일 때 (기존 에러 유지)
+                throw DuplicateParticipationException()
+            }
+        }
 
         // 팟이 없으면 예외 던짐
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()

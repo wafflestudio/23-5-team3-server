@@ -101,3 +101,10 @@ class SuspendedUserException(message: String) :
         httpStatusCode = HttpStatus.FORBIDDEN,
         msg = "정지된 유저는 팟을 생성/참여할 수 없습니다."
     )
+
+class AlreadyJoinedThisPotException :
+    PotException(
+        errorCode = 0,
+        httpStatusCode = HttpStatus.BAD_REQUEST,
+        msg = "이미 해당 택시팟에 참여하고 있습니다."
+    )
