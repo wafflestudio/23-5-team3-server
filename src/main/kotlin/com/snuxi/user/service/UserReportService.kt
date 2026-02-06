@@ -9,6 +9,7 @@ import com.snuxi.user.dto.ChatLogDto
 import com.snuxi.user.model.ReportReason
 import com.snuxi.user.model.Reported
 import com.snuxi.user.repository.UserRepository
+import com.snuxi.user.repository.ReportedRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.data.domain.PageRequest
@@ -19,7 +20,8 @@ class UserReportService (
     private val participantRepository: ParticipantRepository,
     private val chatMessageRepository: ChatMessageRepository,
     private val objectMapper: ObjectMapper,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val reportedRepository: ReportedRepository
 ) {
     @Transactional
     fun reportMessage(
@@ -90,6 +92,8 @@ class UserReportService (
             messages = messagesJson
         )
 
-        return saved.id!!
+        val result = reportedRepository.save(saved)
+
+        return result.id!!
     }
 }
