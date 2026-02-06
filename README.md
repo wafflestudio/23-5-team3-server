@@ -55,7 +55,7 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 #### Slack, Notion, Swagger 기반 API 명세 공유 및 아키텍처 구조 협의  
 https://www.notion.so/API-2ffe04be1b438100888be0685a7158ba?source=copy_link  
   
-#### 주 단위 스프린트 및 Git, GitHub를 통한 PR 단위 코드 리뷰  
+#### 주 단위 스프린트, 커밋 컨벤션 규칙 및 Git, GitHub를 통한 PR 단위 코드 리뷰  
 https://api.snuxi.com/swagger-ui/index.html  
   
 ## 아키텍처 구조(BE)   
@@ -86,5 +86,7 @@ WebSocket 기술을 기반으로 빠른 실시간 텍스트 채팅을 지원해�
 #### 1. Kubernetes 대신 Nginx를 사용한 이유  
 
 #### 2. WebSocket 에서의 메시지 전송 동적 제어 및 인증 흐름  
-
+단일 Pod 환경에서 메시지 전송을 동적으로 제어하기 위해 @SendTo, 외부 메시지 브로커를 사용하지 않고 simpMessagingTemplate 및 pub시 기본 메시지 브로커를 사용하였습니다.  
+인증 흐름은 WebSocket Upgrade를 위한 Handshake, 메시지 요청 종류에 따른 적합성을 검토하는 Interceptor, 메시지를 전송하는 비즈니스 로직으로 제어 흐름을 분리하였습니다.  
+  
 #### 3. 소셜 로그인 시 세션 방식을 선택한 이유  
