@@ -239,7 +239,11 @@ class PotService (
             pot.id!!,
             participation.lastReadMessageId
         )
-        return PotDto.from(pot, ownerName, unreadCount)
+        val totalUnreadCount = chatMessageRepository.countByPotIdAndIdGreaterThan(
+            pot.id!!,
+            participation.lastReadMessageId
+        )
+        return PotDto.from(pot, ownerName, unreadCount, totalUnreadCount)
     }
 
     private fun updateActivePotIdUsers(
