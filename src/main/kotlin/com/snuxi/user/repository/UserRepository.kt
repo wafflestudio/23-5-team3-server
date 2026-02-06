@@ -18,4 +18,7 @@ interface UserRepository: JpaRepository<User, Long> {
     ): Int
     fun countByCreatedAtBetween(start: Instant, end: Instant): Long
     fun findBySuspendedUntilAfter(now: LocalDateTime): List<User>
+    // 누적 유저 수 측정용 max id 조회
+    @Query("SELECT MAX(u.id) FROM User u")
+    fun findMaxId(): Long?
 }
