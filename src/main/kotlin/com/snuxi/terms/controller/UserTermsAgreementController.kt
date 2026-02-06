@@ -77,6 +77,9 @@ class UserTermsAgreementController (
 
         val auth = UsernamePasswordAuthenticationToken(principal, null, authorities)
 
+        //세션 강제 생성
+        servletRequest.getSession(true)
+
         val context = SecurityContextHolder.createEmptyContext()
         context.authentication = auth
         SecurityContextHolder.setContext(context)
