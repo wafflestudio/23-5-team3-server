@@ -17,6 +17,9 @@ import com.snuxi.user.model.User
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
+import jakarta.servlet.http.HttpServletResponse
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository
+import org.springframework.security.web.context.SecurityContextRepository
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
@@ -26,7 +29,8 @@ import java.util.*
 class UserTermsAgreementController (
     private val userTermsAgreementService: UserTermsAgreementService,
     private val userRepository: UserRepository,
-    private val userTermsAgreementRepository: UserTermsAgreementRepository
+    private val userTermsAgreementRepository: UserTermsAgreementRepository,
+    private val securityContextRepository: SecurityContextRepository = HttpSessionSecurityContextRepository()
 ) {
     data class AgreeReq(
         val token: String,
@@ -36,7 +40,8 @@ class UserTermsAgreementController (
     @PostMapping("/agree")
     fun agree(
         @RequestBody request: AgreeReq,
-        servletRequest: HttpServletRequest
+        servletRequest: HttpServletRequest,
+        servletResponse: HttpServletResponse
     ): ResponseEntity<Any> {
         val payload = userTermsAgreementService.verify(request.token) ?: return ResponseEntity.badRequest().body(mapOf("message" to "유효하지 않은 토큰입니다. 재시도 해주세요."))
 
@@ -71,9 +76,12 @@ class UserTermsAgreementController (
         )
 
         val auth = UsernamePasswordAuthenticationToken(principal, null, authorities)
-        SecurityContextHolder.getContext().authentication = auth
-        servletRequest.getSession(true)
 
+        val context = SecurityContextHolder.createEmptyContext()
+        context.authentication = auth
+        SecurityContextHolder.setContext(context)
+
+        securityContextRepository.saveContext(context, servletRequest, servletResponse)
         return ResponseEntity.ok(mapOf("ok" to true, "userId" to user.id))
     }
 }
