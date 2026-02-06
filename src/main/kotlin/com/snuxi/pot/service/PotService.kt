@@ -257,6 +257,9 @@ class PotService (
         if (requestUserId == targetUserId) throw CannotKickSelfException()
         if (!participantRepository.existsByUserIdAndPotId(targetUserId, potId)) throw NotParticipatingException()
 
+        val targetUser = userRepository.findByIdOrNull(targetUserId) ?: throw UserNotFoundException()
+        val targetUserName = targetUser.username
+
         updateActivePotIdUsers(listOf(targetUserId), null)
 
         // userId -> targetUserId로 수정, ANd -> And로 수정
@@ -272,6 +275,7 @@ class PotService (
 
         // 강퇴당한 유저에게 알림 전송
         pushService.sendNotificationToUser(targetUserId, "SNUXI 강퇴 알림", "참여 중이던 팟에서 강퇴되었습니다.")
+        chatBotService.sendKickMsg(potId, targetUserName)
     }
 
     @Transactional(readOnly = true)
