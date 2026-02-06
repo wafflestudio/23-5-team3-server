@@ -9,10 +9,10 @@ Server : https://github.com/wafflestudio/23-5-team3-server
 Client : https://github.com/wafflestudio/23-5-team3-web  
   
 ## 목차  
-- 프로젝트 개요  
-- 아키텍처 구조  
-- 주요 기능  
-- 기술적 의사결정  
+- **프로젝트 개요**  
+- **아키텍처 구조**  
+- **주요 기능**  
+- **기술적 의사결정**  
 
 ## 프로젝트 개요  
 ### SNUXI 서비스  
@@ -24,9 +24,9 @@ Client : https://github.com/wafflestudio/23-5-team3-web
   
 ### 개발자  
 <br />
-| [김기환(Back-End)](https://github.com/LOV-ING-U) | [김용현(Back-End)](https://github.com/Mined2022) | [나규하(Front-End)](https://github.com/Daniel-Na118) | [이유리(Back-End)](https://github.com/colswap) | [이정연(Front-End)](https://github.com/jylee05) |  
-| :--------------------: | :--------------------: | :--------------------: | :--------------------: | :--------------------: |  
-| <a href="https://github.com/LOV-ING-U"><img src="https://avatars.githubusercontent.com/LOV-ING-U" width="300px"></a> | <a href="https://github.com/Mined2022"><img src="https://avatars.githubusercontent.com/Mined2022" width="300px"></a> | <a href="https://github.com/Daniel-Na118"><img src="https://avatars.githubusercontent.com/Daniel-Na118" width="300px"></a> | <a href="https://github.com/colswap"><img src="https://avatars.githubusercontent.com/colswap" width="300px"></a> | <a href="https://github.com/jylee05"><img src="https://avatars.githubusercontent.com/jylee05" width="300px"></a> |  
+| [김기환(BE)](https://github.com/LOV-ING-U) | [김용현(BE)](https://github.com/Mined2022) | [나규하(FE)](https://github.com/Daniel-Na118) | [이유리(BE)](https://github.com/colswap) | [이정연(FE)](https://github.com/jylee05) |
+| :---: | :---: | :---: | :---: | :---: |
+| <a href="https://github.com/LOV-ING-U"><img src="https://avatars.githubusercontent.com/LOV-ING-U" width="120px"></a> | <a href="https://github.com/Mined2022"><img src="https://avatars.githubusercontent.com/Mined2022" width="120px"></a> | <a href="https://github.com/Daniel-Na118"><img src="https://avatars.githubusercontent.com/Daniel-Na118" width="120px"></a> | <a href="https://github.com/colswap"><img src="https://avatars.githubusercontent.com/colswap" width="120px"></a> | <a href="https://github.com/jylee05"><img src="https://avatars.githubusercontent.com/jylee05" width="120px"></a> |
 <br />  
   
 ### 🧱 Tech Stack  
