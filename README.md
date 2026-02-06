@@ -52,8 +52,8 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 #### 협업 전략  
 (대충 git, PR, slack, notion 등)
     
-### 아키텍처 구조  
-(그림 그리기)  
+### 아키텍처 구조(BE)   
+![architecture](./img/snuxi.png)  
     
 ### 주요 기능  
 #### 1. 약관 동의와 학교 메일 인증 절차로 안전하게!  
