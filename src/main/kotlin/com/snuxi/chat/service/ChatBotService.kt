@@ -109,4 +109,13 @@ class ChatBotService (
         simpMessagingTemplate.convertAndSend("/sub/rooms/${roomId}", chatMessageItemDto)
         return chatMessageItemDto
     }
+
+    @Transactional
+    fun sendKickMsg(
+        roomId: Long,
+        userName: String
+    ): ChatMessageItemDto {
+        val text = "${userName} 님이 강퇴되었습니다." // 멘트 수정 가능
+        return sendMessage(roomId, text)
+    }
 }
