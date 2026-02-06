@@ -290,4 +290,18 @@ class PotService (
             dest = LandmarkDto.from(end)
         )
     }
+
+    @Transactional
+    fun togglePotStatus(userId: Long, potId: Long): PotDto {
+        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+
+        // 방장 확인
+        if (pot.ownerId != userId) throw NotPotOwnerException()
+
+        // True <-> False
+        pot.isLocked = !pot.isLocked
+
+        val ownerName = userRepository.findByIdOrNull(pot.ownerId)?.username ?: "알 수 없는 사용자"
+        return PotDto.from(pot, ownerName)
+    }
 }
