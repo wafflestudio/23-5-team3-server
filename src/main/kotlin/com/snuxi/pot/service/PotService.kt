@@ -9,6 +9,7 @@ import com.snuxi.pot.*
 import com.snuxi.pot.dto.CreatePotResponse
 import com.snuxi.pot.dto.PotDto
 import com.snuxi.pot.dto.core.LandmarkDto
+import com.snuxi.pot.dto.response.PotParticipantResponse
 import com.snuxi.pot.entity.Pots
 import com.snuxi.pot.repository.LandmarkRepository
 import com.snuxi.pot.repository.PotRepository
@@ -20,6 +21,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+
 
 @Service
 class PotService (
@@ -303,5 +305,19 @@ class PotService (
 
         val ownerName = userRepository.findByIdOrNull(pot.ownerId)?.username ?: "알 수 없는 사용자"
         return PotDto.from(pot, ownerName)
+    }
+
+    @Transactional(readOnly = true)
+    fun getPotParticipants(potId: Long): List<PotParticipantResponse> {
+        // 팟이 존재하는 지 확인
+        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+
+        // 유저 리스트 가져오기
+        val users = participantRepository.findUsersByPotId(potId)
+
+        return users.map { user ->
+            val isOwner = (user.id == pot.ownerId)
+            PotParticipantResponse.from(user, isOwner)
+        }
     }
 }
