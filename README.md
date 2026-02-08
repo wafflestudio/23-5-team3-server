@@ -28,6 +28,7 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 | [김기환(BE)](https://github.com/LOV-ING-U) | [김용현(BE)](https://github.com/Mined2022) | [나규하(FE)](https://github.com/Daniel-Na118) | [이유리(BE)](https://github.com/colswap) | [이정연(FE)](https://github.com/jylee05) |
 | :---: | :---: | :---: | :---: | :---: |
 | <a href="https://github.com/LOV-ING-U"><img src="https://avatars.githubusercontent.com/LOV-ING-U" width="150px"></a> | <a href="https://github.com/Mined2022"><img src="https://avatars.githubusercontent.com/Mined2022" width="150px"></a> | <a href="https://github.com/Daniel-Na118"><img src="https://avatars.githubusercontent.com/Daniel-Na118" width="150px"></a> | <a href="https://github.com/colswap"><img src="https://avatars.githubusercontent.com/colswap" width="150px"></a> | <a href="https://github.com/jylee05"><img src="https://avatars.githubusercontent.com/jylee05" width="150px"></a> |
+| WebSocket 기반 메시징 시스템 및 팟 참여/퇴장 트랜잭션 구현 | 세션 기반 OAuth 로그인 및 신고 기능 구현 | (프론트엔드) | 배포 인프라 구축 및 FCM 기반 알림 구현 | (프론트엔드) |
 
 <br />
   
