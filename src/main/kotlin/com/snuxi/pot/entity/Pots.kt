@@ -32,6 +32,8 @@ class Pots (
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     var status: PotStatus,
+    @Column(name = "is_locked")
+    var isLocked: Boolean = false
 
 ) {
     @CreatedDate

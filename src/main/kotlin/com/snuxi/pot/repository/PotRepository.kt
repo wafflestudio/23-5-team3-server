@@ -18,6 +18,7 @@ interface PotRepository : JpaRepository<Pots, Long> {
         WHERE p.departureId = :depId AND p.destinationId = :destId 
         AND p.status IN :statuses 
         AND p.currentCount < p.maxCapacity
+        AND p.isLocked = false
         ORDER BY p.departureTime ASC
     """)
     fun findAvailableWithDest(
@@ -31,6 +32,7 @@ interface PotRepository : JpaRepository<Pots, Long> {
         SELECT p FROM Pots p 
         WHERE p.status IN :statuses 
         AND p.currentCount < p.maxCapacity
+        AND p.isLocked = false
         ORDER BY p.departureTime ASC
     """)
     fun findAvailableAll(
@@ -43,6 +45,7 @@ interface PotRepository : JpaRepository<Pots, Long> {
         WHERE p.destinationId = :destId 
         AND p.status IN :statuses 
         AND p.currentCount < p.maxCapacity
+        AND p.isLocked = false
         ORDER BY p.departureTime ASC
     """)
     fun findAvailableByDestination(
@@ -56,6 +59,7 @@ interface PotRepository : JpaRepository<Pots, Long> {
         WHERE p.departureId = :depId 
         AND p.status IN :statuses 
         AND p.currentCount < p.maxCapacity
+        AND p.isLocked = false
         ORDER BY p.departureTime ASC
     """)
     fun findAvailableByDeparture(
@@ -101,18 +105,30 @@ interface PotRepository : JpaRepository<Pots, Long> {
         @Param("successStatus") successStatus: PotStatus
     ): Int
 
-    fun findAllByDepartureTimeBetweenAndStatusIn(
-        start: LocalDateTime,
-        end: LocalDateTime,
+    fun findAllByDepartureTimeBeforeAndStatusIn(
+        now: LocalDateTime,
         statuses: Collection<PotStatus>
     ): List<Pots>
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
-        SELECT l1.name, l2.name, COUNT(p) 
+    UPDATE Pots p 
+    SET p.status = :expiredStatus 
+    WHERE p.departureTime < :now 
+    AND p.status IN :activeStatuses
+""")
+    fun updateStatusForExpiredPots(
+        @Param("now") now: LocalDateTime,
+        @Param("expiredStatus") expiredStatus: PotStatus,
+        @Param("activeStatuses") activeStatuses: Collection<PotStatus>
+    ): Int
+
+    @Query("""
+        SELECT l1.landmarkName, l2.landmarkName, COUNT(p) 
         FROM Pots p 
         JOIN Landmark l1 ON p.departureId = l1.id 
         JOIN Landmark l2 ON p.destinationId = l2.id 
-        GROUP BY l1.name, l2.name 
+        GROUP BY l1.landmarkName, l2.landmarkName 
         ORDER BY COUNT(p) DESC
     """)
     fun findTopRoutes(pageable: Pageable): List<Array<Any>>
@@ -120,4 +136,7 @@ interface PotRepository : JpaRepository<Pots, Long> {
     fun countByStatus(status: PotStatus): Long
     fun countByCreatedAtBetween(start: Instant, end: Instant): Long
 
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE Pots p SET p.status = 'EXPIRED' WHERE p.id IN :potIds")
+    fun updateStatusToExpiredByIds(@Param("potIds") potIds: List<Long>)
 }
