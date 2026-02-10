@@ -1,6 +1,7 @@
 package com.snuxi.participant.repository
 
 import com.snuxi.participant.entity.Participants
+import com.snuxi.user.model.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -58,4 +59,10 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("DELETE FROM Participants p WHERE p.potId IN :potIds")
     fun deleteAllByPotIdIn(@Param("potIds") potIds: List<Long>)
+    fun deleteAllByUserId(userId: Long)
+
+    @Query("SELECT u FROM User u, Participants p WHERE u.id = p.userId AND p.potId = :potId")
+    fun findUsersByPotId(@Param("potId") potId: Long): List<User>
+
+    fun findByPotIdOrderByJoinedAtAsc(potId: Long): List<Participants>
 }

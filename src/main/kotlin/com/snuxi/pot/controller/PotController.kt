@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Page
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import com.snuxi.pot.dto.core.LandmarkDto
+import com.snuxi.pot.dto.response.PotParticipantResponse
 
 @RestController
 class PotController (
@@ -96,4 +97,21 @@ class PotController (
         @PathVariable("roomId") roomId: Long,
         @AuthenticationPrincipal principal: CustomOAuth2User
     ): String = potService.generateKakaoDeepLink(roomId, principal.userId)
+
+    @PatchMapping("/rooms/{roomId}/status")
+    fun togglePotStatus(
+        @AuthenticationPrincipal principal: CustomOAuth2User,
+        @PathVariable roomId: Long
+    ): ResponseEntity<PotDto> {
+        val updatedPot = potService.togglePotStatus(principal.userId, roomId)
+        return ResponseEntity.ok(updatedPot)
+    }
+
+    @GetMapping("/rooms/{roomId}/participants")
+    fun getPotParticipants(
+        @PathVariable roomId: Long
+    ): ResponseEntity<List<PotParticipantResponse>> {
+        val participants = potService.getPotParticipants(roomId)
+        return ResponseEntity.ok(participants)
+    }
 }

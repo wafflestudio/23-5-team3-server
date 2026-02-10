@@ -9,6 +9,7 @@ import com.snuxi.pot.*
 import com.snuxi.pot.dto.CreatePotResponse
 import com.snuxi.pot.dto.PotDto
 import com.snuxi.pot.dto.core.LandmarkDto
+import com.snuxi.pot.dto.response.PotParticipantResponse
 import com.snuxi.pot.entity.Pots
 import com.snuxi.pot.repository.LandmarkRepository
 import com.snuxi.pot.repository.PotRepository
@@ -20,6 +21,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+
 
 @Service
 class PotService (
@@ -40,6 +42,9 @@ class PotService (
         minCapacity: Int,
         maxCapacity: Int
     ): CreatePotResponse {
+        val user = userRepository.findByIdOrNull(userId) ?: throw UserNotFoundException()
+        if (user.isSuspended()) throw SuspendedUserException("정지된 사용자는 팟을 생성할 수 없습니다.")
+
         if(minCapacity > maxCapacity) throw MinMaxReversedException()
         if(minCapacity < 2 || maxCapacity > 4) throw InvalidCountException()
         if(participantRepository.existsByUserId(userId)) throw DuplicateParticipationException()
@@ -109,11 +114,25 @@ class PotService (
 
     @Transactional
     fun joinPot(userId: Long, potId: Long){
+        val user = userRepository.findByIdOrNull(userId) ?: throw UserNotFoundException()
+        if (user.isSuspended()) throw SuspendedUserException("정지된 사용자는 팟에 참여할 수 없습니다.")
+
         // 이미 참여한 사람이 또 참여 불가
-        if (participantRepository.existsByUserId(userId)) throw DuplicateParticipationException()
+        val existingParticipation = participantRepository.findByUserId(userId)
+
+        if (existingParticipation != null) {
+            if (existingParticipation.potId == potId) {
+                // 1. 참여하려는 팟이 현재 참여 중인 팟과 같을 때
+                throw AlreadyJoinedThisPotException()
+            } else {
+                // 2. 다른 팟에 이미 참여 중일 때
+                throw DuplicateParticipationException()
+            }
+        }
 
         // 팟이 없으면 예외 던짐
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+        val oldStatus = pot.status
 
         // join 성공 후, participant 정보 업데이트(실패시 예외 던져서 트랜잭션 롤백되게)
         try{
@@ -137,7 +156,7 @@ class PotService (
 
         //업뎃 후 팟 상태 확인하고 SUCCESS 시 알림 발송
         val potAfterJoin = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
-        if (potAfterJoin.status == PotStatus.SUCCESS) {
+        if (oldStatus == PotStatus.RECRUITING && potAfterJoin.status == PotStatus.SUCCESS) {
             val participantIds = participantRepository.findUserIdsByPotId(potId)
             pushService.sendNotificationToUsers(
                 participantIds,
@@ -190,9 +209,19 @@ class PotService (
                 return
             }
 
-            // 1명 이상 남아있으면 방장 위임
-            val nextOwner = participantRepository.findFirstByPotIdOrderByJoinedAtAsc(potId)
-            if(nextOwner != null) updatedPotInfo.ownerId = nextOwner.userId
+            val participants = participantRepository.findByPotIdOrderByJoinedAtAsc(potId)
+
+            val nextOwner = participants.asSequence()
+                .mapNotNull { p -> userRepository.findByIdOrNull(p.userId) }
+                .filter { u -> !u.isSuspended() }
+                .firstOrNull()
+
+            if (nextOwner != null) {
+                updatedPotInfo.ownerId = nextOwner.id!!
+                chatBotService.sendOwnerChangeMsg(potId, nextOwner.username)
+            } else {
+                potRepository.delete(updatedPotInfo)
+            }
         }
     }
 
@@ -233,11 +262,15 @@ class PotService (
         val pot = potRepository.findByIdOrNull(participation.potId) ?: return null
         val owner = userRepository.findByIdOrNull(pot.ownerId)
         val ownerName = owner ?.username ?: "알 수 없는 사용자"
-        val unreadCount = chatMessageRepository.countByPotIdAndIdGreaterThan(
+        val unreadCount = chatMessageRepository.countUnreadMessagesExceptBot(
             pot.id!!,
             participation.lastReadMessageId
         )
-        return PotDto.from(pot, ownerName, unreadCount)
+        val totalUnreadCount = chatMessageRepository.countByPotIdAndIdGreaterThan(
+            pot.id!!,
+            participation.lastReadMessageId
+        )
+        return PotDto.from(pot, ownerName, unreadCount, totalUnreadCount)
     }
 
     private fun updateActivePotIdUsers(
@@ -255,6 +288,9 @@ class PotService (
         if (requestUserId == targetUserId) throw CannotKickSelfException()
         if (!participantRepository.existsByUserIdAndPotId(targetUserId, potId)) throw NotParticipatingException()
 
+        val targetUser = userRepository.findByIdOrNull(targetUserId) ?: throw UserNotFoundException()
+        val targetUserName = targetUser.username
+
         updateActivePotIdUsers(listOf(targetUserId), null)
 
         // userId -> targetUserId로 수정, ANd -> And로 수정
@@ -270,6 +306,7 @@ class PotService (
 
         // 강퇴당한 유저에게 알림 전송
         pushService.sendNotificationToUser(targetUserId, "SNUXI 강퇴 알림", "참여 중이던 팟에서 강퇴되었습니다.")
+        chatBotService.sendKickMsg(potId, targetUserName)
     }
 
     @Transactional(readOnly = true)
@@ -289,5 +326,33 @@ class PotService (
             origin = LandmarkDto.from(start),
             dest = LandmarkDto.from(end)
         )
+    }
+
+    @Transactional
+    fun togglePotStatus(userId: Long, potId: Long): PotDto {
+        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+
+        // 방장 확인
+        if (pot.ownerId != userId) throw NotPotOwnerException()
+
+        // True <-> False
+        pot.isLocked = !pot.isLocked
+
+        val ownerName = userRepository.findByIdOrNull(pot.ownerId)?.username ?: "알 수 없는 사용자"
+        return PotDto.from(pot, ownerName)
+    }
+
+    @Transactional(readOnly = true)
+    fun getPotParticipants(potId: Long): List<PotParticipantResponse> {
+        // 팟이 존재하는 지 확인
+        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
+
+        // 유저 리스트 가져오기
+        val users = participantRepository.findUsersByPotId(potId)
+
+        return users.map { user ->
+            val isOwner = (user.id == pot.ownerId)
+            PotParticipantResponse.from(user, isOwner)
+        }
     }
 }

@@ -14,4 +14,5 @@ interface UserDeviceRepository : JpaRepository<UserDevice, Long> {
 
     // 방 참여자 여러 명에게 한꺼번에 보낼 때 사용
     fun findAllByUserIdIn(userIds: List<Long>): List<UserDevice>
+    fun deleteAllByUserId(userId: Long)
 }

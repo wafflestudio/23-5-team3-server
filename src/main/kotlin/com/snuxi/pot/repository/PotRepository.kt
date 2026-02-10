@@ -127,8 +127,8 @@ interface PotRepository : JpaRepository<Pots, Long> {
         SELECT l1.landmarkName, l2.landmarkName, COUNT(p) 
         FROM Pots p 
         JOIN Landmark l1 ON p.departureId = l1.id 
-        JOIN Landmark l2 ON p.destinationId = l2.id 
-        GROUP BY l1.landmarkName, l2.landmarkName 
+        JOIN Landmark l2 ON p.destinationId = l2.id
+        GROUP BY l1.landmarkName, l2.landmarkName
         ORDER BY COUNT(p) DESC
     """)
     fun findTopRoutes(pageable: Pageable): List<Array<Any>>
@@ -139,4 +139,5 @@ interface PotRepository : JpaRepository<Pots, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Pots p SET p.status = 'EXPIRED' WHERE p.id IN :potIds")
     fun updateStatusToExpiredByIds(@Param("potIds") potIds: List<Long>)
+    fun deleteAllByOwnerId(userId: Long)
 }

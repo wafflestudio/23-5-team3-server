@@ -5,33 +5,17 @@ import java.time.LocalDateTime
 
 data class AdminStatsResponse(
     val summary: StatsSummary,
-    val dailyTrends: List<DailyTrendDto>,
-    val hourlyActivity: List<HourlyActivityDto>,
     val analysis: StatsAnalysis
 )
 
 data class StatsSummary(
-    val totalUsers: Long,
-    val totalSuccessPots: Long,
-    val totalMessages: Long,
-    val unprocessedReports: Long
+    val activeUsers: Long,        // 현재 서비스 중인 유저 수
+    val cumulativeUsers: Long,    // 지금까지 거쳐간 총 유저 수 (MAX ID)
+    val currentPots: Long,        // 현재 DB에 남아있는 팟 수
+    val unprocessedReports: Long  // 아직 처리 안 된 신고 수
 )
-
-data class DailyTrendDto(
-    val date: String,
-    val newUsers: Long,
-    val activeUsers: Long,
-    val createdPots: Long,
-    val messages: Long
-)
-
-data class HourlyActivityDto(val hour: Int, val chatCount: Long, val potCount: Long)
 
 data class StatsAnalysis(
-    val successRate: Double,
-    val topRoutes: List<RouteRankDto>,
-    val reportReasons: Map<ReportReason, Long>,
-    val suspendedUsers: List<String>
+    val reportReasons: Map<ReportReason, Long>, // 신고 사유별 통계
+    val suspendedUsers: List<String>            // 현재 정지 상태인 유저 목록
 )
-
-data class RouteRankDto(val routeName: String, val count: Long)

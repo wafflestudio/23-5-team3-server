@@ -25,7 +25,7 @@ class User(
     var profileImageUrl: String? = null,
 
     @Enumerated(EnumType.STRING)
-    val role: Role = Role.USER,
+    var role: Role = Role.USER,
 
     val activePotId: Long? = null,
 
@@ -37,6 +37,10 @@ class User(
     @Column(name = "suspension_count")
     var suspensionCount: Int = 0
 ) {
+    fun isSuspended(): Boolean {
+        return suspendedUntil?.isAfter(LocalDateTime.now()) ?: false
+    }
+
     @CreatedDate
     var createdAt: Instant? = null
 

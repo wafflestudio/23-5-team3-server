@@ -14,5 +14,7 @@ data class ChatMessageItemDto (
     val potId: Long,
     val senderId: Long,
     val text: String,
-    val datetimeSendAt: LocalDateTime
+    val datetimeSendAt: LocalDateTime,
+    val senderUsername: String,
+    val senderProfileImageUrl: String?
 )

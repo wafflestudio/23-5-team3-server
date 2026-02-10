@@ -4,7 +4,9 @@ import com.snuxi.chat.entity.ChatMessage
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import java.time.LocalDateTime
 
 interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
@@ -29,6 +31,13 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
 
     // for debug
     fun countByPotId(potId: Long): Long
+    
+    // 이전 50개 + 본 채팅 1개 = 51개 가져오기
+    fun findByPotIdAndIdLessThanEqualOrderByIdDesc(
+        potId: Long,
+        id: Long,
+        pageable: Pageable
+    ): Page<ChatMessage>
 
     @Query("SELECT HOUR(m.datetimeSendAt) as hr, COUNT(m) FROM ChatMessage m GROUP BY hr")
     fun countMessagesGroupedByHour(): List<Array<Any>>
@@ -37,4 +46,30 @@ interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
     fun countActiveUsersBetween(start: LocalDateTime, end: LocalDateTime): Long
 
     fun countByDatetimeSendAtBetween(start: LocalDateTime, end: LocalDateTime): Long
+    // 본 채팅 이후 50개 가져오기
+    fun findByPotIdAndIdGreaterThanOrderByIdAsc(
+        potId: Long,
+        id: Long,
+        pageable: Pageable
+    ): Page<ChatMessage>
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE ChatMessage m SET m.senderId = :anonymousId WHERE m.senderId = :userId")
+    fun anonymizeSender(
+        @Param("userId") userId: Long,
+        @Param("anonymousId") anonymousId: Long = 0L
+    ): Int
+
+    // 봇(senderId = 0) 메시지는 제외하고 카운트
+    @Query("""
+        SELECT COUNT(c) FROM ChatMessage c 
+        WHERE c.potId = :potId 
+        AND c.id > :lastReadMessageId 
+        AND c.senderId != 7
+    """)
+    fun countUnreadMessagesExceptBot(
+        @Param("potId") potId: Long,
+        @Param("lastReadMessageId") lastReadMessageId: Long
+    ): Long
+
 }

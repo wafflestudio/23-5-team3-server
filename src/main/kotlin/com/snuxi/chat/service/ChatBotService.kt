@@ -100,11 +100,28 @@ class ChatBotService (
             potId = saved.potId,
             senderId = saved.senderId,
             text = saved.text,
-            datetimeSendAt = saved.datetimeSendAt
+            datetimeSendAt = saved.datetimeSendAt,
+            senderUsername = BOT_USERNAME,
+            senderProfileImageUrl = null
         )
 
         // 메시지 브로드캐스트
         simpMessagingTemplate.convertAndSend("/sub/rooms/${roomId}", chatMessageItemDto)
         return chatMessageItemDto
+    }
+
+    @Transactional
+    fun sendKickMsg(
+        roomId: Long,
+        userName: String
+    ): ChatMessageItemDto {
+        val text = "${userName} 님이 강퇴되었습니다." // 멘트 수정 가능
+        return sendMessage(roomId, text)
+    }
+
+    @Transactional
+    fun sendOwnerChangeMsg(potId: Long, nextOwnerName: String): ChatMessageItemDto {
+        val text = "${nextOwnerName}님이 새로운 방장이 되었습니다."
+        return sendMessage(potId, text)
     }
 }

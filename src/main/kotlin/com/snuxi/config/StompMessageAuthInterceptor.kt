@@ -3,19 +3,22 @@ package com.snuxi.config
 import com.snuxi.participant.repository.ParticipantRepository
 import com.snuxi.security.CurrentUserIdResolver
 import com.snuxi.security.CustomOAuth2User
+import com.snuxi.user.repository.UserRepository
 import org.springframework.messaging.support.ChannelInterceptor
 import org.springframework.stereotype.Component
 import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
 import org.springframework.messaging.simp.stomp.StompCommand
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor
+import org.springframework.data.repository.findByIdOrNull
 import java.security.Principal
 import org.springframework.security.core.Authentication
 
 @Component
 class StompMessageAuthInterceptor (
     private val participantRepository: ParticipantRepository,
-    private val currentUserIdResolver: CurrentUserIdResolver
+    private val currentUserIdResolver: CurrentUserIdResolver,
+    private val userRepository: UserRepository
 ): ChannelInterceptor {
     // 메시지가 전송되기 전 이 함수가 가로채서 보안 검사를 한다.
     override fun preSend(
