@@ -53,6 +53,12 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
         @Param("messageId") messageId: Long
     )
 
+    @Query("SELECT p.userId FROM Participants p WHERE p.potId IN :potIds")
+    fun findUserIdsByPotIds(@Param("potIds") potIds: List<Long>): List<Long>
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("DELETE FROM Participants p WHERE p.potId IN :potIds")
+    fun deleteAllByPotIdIn(@Param("potIds") potIds: List<Long>)
     fun deleteAllByUserId(userId: Long)
 
     @Query("SELECT u FROM User u, Participants p WHERE u.id = p.userId AND p.potId = :potId")
