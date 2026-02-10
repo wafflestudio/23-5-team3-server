@@ -105,6 +105,12 @@ interface PotRepository : JpaRepository<Pots, Long> {
         @Param("successStatus") successStatus: PotStatus
     ): Int
 
+    fun findAllByDepartureTimeBetweenAndStatusIn(
+    start: LocalDateTime,
+    end: LocalDateTime,
+    statuses: Collection<PotStatus>
+    ): List<Pots>
+    
     fun findAllByDepartureTimeBeforeAndStatusIn(
         now: LocalDateTime,
         statuses: Collection<PotStatus>
