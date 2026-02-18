@@ -24,119 +24,49 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 ### 🗓️ 기간  
 2025.12 ~ 2026.02  
   
-### 👩🏻‍💻 개발자
-<br/>
+### 👩🏻‍💻 개발자  
+  
+<br/>  
 
-<table style="width:100%; table-layout:fixed; border-collapse:collapse;">
-  <tr>
-    <td style="width:20%; padding:14px; text-align:center; vertical-align:top;">
-      <div style="font-weight:700; font-size:18px;">
-        <a href="https://github.com/LOV-ING-U">김기환(BE)</a>
-      </div>
-
-      <a href="https://github.com/LOV-ING-U" style="display:inline-block; margin:12px auto; text-decoration:none;">
-        <div style="width:120px; height:120px; border-radius:14px; overflow:hidden;">
-          <img
-            src="https://avatars.githubusercontent.com/LOV-ING-U"
-            style="width:100%; height:100%; object-fit:cover; display:block;"
-            alt="김기환 GitHub"
-          />
-        </div>
-      </a>
-
-      <div style="font-size:14px; line-height:1.45; word-break:keep-all;">
-        WebSocket 기반 메시징 시스템 및<br/>
-        팟 참여/퇴장 트랜잭션 구현
-      </div>
-    </td>
-
-    <td style="width:20%; padding:14px; text-align:center; vertical-align:top;">
-      <div style="font-weight:700; font-size:18px;">
-        <a href="https://github.com/Mined2022">김용현(BE)</a>
-      </div>
-
-      <a href="https://github.com/Mined2022" style="display:inline-block; margin:12px auto; text-decoration:none;">
-        <div style="width:120px; height:120px; border-radius:14px; overflow:hidden;">
-          <img
-            src="https://avatars.githubusercontent.com/Mined2022"
-            style="width:100%; height:100%; object-fit:cover; display:block;"
-            alt="김용현 GitHub"
-          />
-        </div>
-      </a>
-
-      <div style="font-size:14px; line-height:1.45; word-break:keep-all;">
-        세션 기반 OAuth 로그인 및<br/>
-        신고 기능 구현
-      </div>
-    </td>
-
-    <td style="width:20%; padding:14px; text-align:center; vertical-align:top;">
-      <div style="font-weight:700; font-size:18px;">
-        <a href="https://github.com/Daniel-Na118">나규하(FE)</a>
-      </div>
-
-      <a href="https://github.com/Daniel-Na118" style="display:inline-block; margin:12px auto; text-decoration:none;">
-        <div style="width:120px; height:120px; border-radius:14px; overflow:hidden;">
-          <img
-            src="https://avatars.githubusercontent.com/Daniel-Na118"
-            style="width:100%; height:100%; object-fit:cover; display:block;"
-            alt="나규하 GitHub"
-          />
-        </div>
-      </a>
-
-      <div style="font-size:14px; line-height:1.45; word-break:keep-all;">
-        (프론트엔드)
-      </div>
-    </td>
-
-    <td style="width:20%; padding:14px; text-align:center; vertical-align:top;">
-      <div style="font-weight:700; font-size:18px;">
-        <a href="https://github.com/colswap">이유리(BE)</a>
-      </div>
-
-      <a href="https://github.com/colswap" style="display:inline-block; margin:12px auto; text-decoration:none;">
-        <div style="width:120px; height:120px; border-radius:14px; overflow:hidden;">
-          <img
-            src="https://avatars.githubusercontent.com/colswap"
-            style="width:100%; height:100%; object-fit:cover; display:block;"
-            alt="이유리 GitHub"
-          />
-        </div>
-      </a>
-
-      <div style="font-size:14px; line-height:1.45; word-break:keep-all;">
-        배포 인프라 구축 및<br/>
-        FCM 기반 알림 구현
-      </div>
-    </td>
-
-    <td style="width:20%; padding:14px; text-align:center; vertical-align:top;">
-      <div style="font-weight:700; font-size:18px;">
-        <a href="https://github.com/jylee05">이정연(FE)</a>
-      </div>
-
-      <a href="https://github.com/jylee05" style="display:inline-block; margin:12px auto; text-decoration:none;">
-        <div style="width:120px; height:120px; border-radius:14px; overflow:hidden;">
-          <img
-            src="https://avatars.githubusercontent.com/jylee05"
-            style="width:100%; height:100%; object-fit:cover; display:block;"
-            alt="이정연 GitHub"
-          />
-        </div>
-      </a>
-
-      <div style="font-size:14px; line-height:1.45; word-break:keep-all;">
-        (프론트엔드)
-      </div>
-    </td>
-  </tr>
+<table style="width: 100%;">
+  <thead>
+    <tr>
+      <th width="20%"><a href="https://github.com/LOV-ING-U">김기환(BE)</a></th>
+      <th width="20%"><a href="https://github.com/Mined2022">김용현(BE)</a></th>
+      <th width="20%"><a href="https://github.com/Daniel-Na118">나규하(FE)</a></th>
+      <th width="20%"><a href="https://github.com/colswap">이유리(BE)</a></th>
+      <th width="20%"><a href="https://github.com/jylee05">이정연(FE)</a></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td align="center">
+        <img src="https://avatars.githubusercontent.com/LOV-ING-U" width="100" style="max-width: 100%;">
+      </td>
+      <td align="center">
+        <img src="https://avatars.githubusercontent.com/Mined2022" width="100" style="max-width: 100%;">
+      </td>
+      <td align="center">
+        <img src="https://avatars.githubusercontent.com/Daniel-Na118" width="100" style="max-width: 100%;">
+      </td>
+      <td align="center">
+        <img src="https://avatars.githubusercontent.com/colswap" width="100" style="max-width: 100%;">
+      </td>
+      <td align="center">
+        <img src="https://avatars.githubusercontent.com/jylee05" width="100" style="max-width: 100%;">
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="font-size: 12px;">WebSocket 기반 메시징 및<br>트랜잭션 구현</td>
+      <td align="center" style="font-size: 12px;">세션 기반 OAuth 및<br>신고 기능 구현</td>
+      <td align="center" style="font-size: 12px;">(프론트엔드)</td>
+      <td align="center" style="font-size: 12px;">인프라 구축 및<br>FCM 알림 구현</td>
+      <td align="center" style="font-size: 12px;">(프론트엔드)</td>
+    </tr>
+  </tbody>
 </table>
-
-<br/>
-
-
+  
+<br/>  
   
 ## 2-1. 🧱 Tech Stack  
 #### Front-End  
