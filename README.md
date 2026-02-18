@@ -27,73 +27,116 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 ### 👩🏻‍💻 개발자
 <br/>
 
-<table style="width:100%; table-layout:fixed;">
+<table style="width:100%; table-layout:fixed; border-collapse:collapse;">
   <tr>
-    <td style="width:20%; text-align:center;">
-      <a href="https://github.com/LOV-ING-U">김기환(BE)</a>
-    </td>
-    <td style="width:20%; text-align:center;">
-      <a href="https://github.com/Mined2022">김용현(BE)</a>
-    </td>
-    <td style="width:20%; text-align:center;">
-      <a href="https://github.com/Daniel-Na118">나규하(FE)</a>
-    </td>
-    <td style="width:20%; text-align:center;">
-      <a href="https://github.com/colswap">이유리(BE)</a>
-    </td>
-    <td style="width:20%; text-align:center;">
-      <a href="https://github.com/jylee05">이정연(FE)</a>
-    </td>
-  </tr>
+    <td style="width:20%; padding:14px; text-align:center; vertical-align:top;">
+      <div style="font-weight:700; font-size:18px;">
+        <a href="https://github.com/LOV-ING-U">김기환(BE)</a>
+      </div>
 
-  <tr>
-    <td style="width:20%; text-align:center;">
-      <a href="https://github.com/LOV-ING-U">
-        <img src="https://avatars.githubusercontent.com/LOV-ING-U" width="120" height="120" />
+      <a href="https://github.com/LOV-ING-U" style="display:inline-block; margin:12px auto; text-decoration:none;">
+        <div style="width:120px; height:120px; border-radius:14px; overflow:hidden;">
+          <img
+            src="https://avatars.githubusercontent.com/LOV-ING-U"
+            style="width:100%; height:100%; object-fit:cover; display:block;"
+            alt="김기환 GitHub"
+          />
+        </div>
       </a>
-    </td>
-    <td style="width:20%; text-align:center;">
-      <a href="https://github.com/Mined2022">
-        <img src="https://avatars.githubusercontent.com/Mined2022" width="120" height="120" />
-      </a>
-    </td>
-    <td style="width:20%; text-align:center;">
-      <a href="https://github.com/Daniel-Na118">
-        <img src="https://avatars.githubusercontent.com/Daniel-Na118" width="120" height="120" />
-      </a>
-    </td>
-    <td style="width:20%; text-align:center;">
-      <a href="https://github.com/colswap">
-        <img src="https://avatars.githubusercontent.com/colswap" width="120" height="120" />
-      </a>
-    </td>
-    <td style="width:20%; text-align:center;">
-      <a href="https://github.com/jylee05">
-        <img src="https://avatars.githubusercontent.com/jylee05" width="120" height="120" />
-      </a>
-    </td>
-  </tr>
 
-  <tr>
-    <td style="width:20%; text-align:center;">
-      WebSocket 기반 메시징 시스템 및<br/>팟 참여/퇴장 트랜잭션 구현
+      <div style="font-size:14px; line-height:1.45; word-break:keep-all;">
+        WebSocket 기반 메시징 시스템 및<br/>
+        팟 참여/퇴장 트랜잭션 구현
+      </div>
     </td>
-    <td style="width:20%; text-align:center;">
-      세션 기반 OAuth 로그인 및<br/>신고 기능 구현
+
+    <td style="width:20%; padding:14px; text-align:center; vertical-align:top;">
+      <div style="font-weight:700; font-size:18px;">
+        <a href="https://github.com/Mined2022">김용현(BE)</a>
+      </div>
+
+      <a href="https://github.com/Mined2022" style="display:inline-block; margin:12px auto; text-decoration:none;">
+        <div style="width:120px; height:120px; border-radius:14px; overflow:hidden;">
+          <img
+            src="https://avatars.githubusercontent.com/Mined2022"
+            style="width:100%; height:100%; object-fit:cover; display:block;"
+            alt="김용현 GitHub"
+          />
+        </div>
+      </a>
+
+      <div style="font-size:14px; line-height:1.45; word-break:keep-all;">
+        세션 기반 OAuth 로그인 및<br/>
+        신고 기능 구현
+      </div>
     </td>
-    <td style="width:20%; text-align:center;">
-      (프론트엔드)
+
+    <td style="width:20%; padding:14px; text-align:center; vertical-align:top;">
+      <div style="font-weight:700; font-size:18px;">
+        <a href="https://github.com/Daniel-Na118">나규하(FE)</a>
+      </div>
+
+      <a href="https://github.com/Daniel-Na118" style="display:inline-block; margin:12px auto; text-decoration:none;">
+        <div style="width:120px; height:120px; border-radius:14px; overflow:hidden;">
+          <img
+            src="https://avatars.githubusercontent.com/Daniel-Na118"
+            style="width:100%; height:100%; object-fit:cover; display:block;"
+            alt="나규하 GitHub"
+          />
+        </div>
+      </a>
+
+      <div style="font-size:14px; line-height:1.45; word-break:keep-all;">
+        (프론트엔드)
+      </div>
     </td>
-    <td style="width:20%; text-align:center;">
-      배포 인프라 구축 및<br/>FCM 기반 알림 구현
+
+    <td style="width:20%; padding:14px; text-align:center; vertical-align:top;">
+      <div style="font-weight:700; font-size:18px;">
+        <a href="https://github.com/colswap">이유리(BE)</a>
+      </div>
+
+      <a href="https://github.com/colswap" style="display:inline-block; margin:12px auto; text-decoration:none;">
+        <div style="width:120px; height:120px; border-radius:14px; overflow:hidden;">
+          <img
+            src="https://avatars.githubusercontent.com/colswap"
+            style="width:100%; height:100%; object-fit:cover; display:block;"
+            alt="이유리 GitHub"
+          />
+        </div>
+      </a>
+
+      <div style="font-size:14px; line-height:1.45; word-break:keep-all;">
+        배포 인프라 구축 및<br/>
+        FCM 기반 알림 구현
+      </div>
     </td>
-    <td style="width:20%; text-align:center;">
-      (프론트엔드)
+
+    <td style="width:20%; padding:14px; text-align:center; vertical-align:top;">
+      <div style="font-weight:700; font-size:18px;">
+        <a href="https://github.com/jylee05">이정연(FE)</a>
+      </div>
+
+      <a href="https://github.com/jylee05" style="display:inline-block; margin:12px auto; text-decoration:none;">
+        <div style="width:120px; height:120px; border-radius:14px; overflow:hidden;">
+          <img
+            src="https://avatars.githubusercontent.com/jylee05"
+            style="width:100%; height:100%; object-fit:cover; display:block;"
+            alt="이정연 GitHub"
+          />
+        </div>
+      </a>
+
+      <div style="font-size:14px; line-height:1.45; word-break:keep-all;">
+        (프론트엔드)
+      </div>
     </td>
   </tr>
 </table>
 
 <br/>
+
+
   
 ## 2-1. 🧱 Tech Stack  
 #### Front-End  
