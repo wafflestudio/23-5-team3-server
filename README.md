@@ -10,6 +10,7 @@ Client : https://github.com/wafflestudio/23-5-team3-web
   
 ## 목차  
 - **프로젝트 개요**  
+- **기술 스택 및 협업 전략**  
 - **아키텍처 구조**  
 - **주요 기능**  
 - **기술적 의사결정**  
@@ -32,7 +33,7 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 
 <br />
   
-### 🧱 Tech Stack  
+## 🧱 Tech Stack  
 #### Front-End  
 <p>
     <img alt="React"  src="https://img.shields.io/badge/-ReactJs-61DAFB?logo=react&logoColor=white&style=for-the-badge">
@@ -52,36 +53,31 @@ Client : https://github.com/wafflestudio/23-5-team3-web
     <img alt="Nginx"  src="https://img.shields.io/badge/Nginx-009639?logo=nginx&logoColor=white&style=for-the-badge">
 </p>  
 
-### 협업 전략  
+## 협업 전략  
 #### Slack, Notion, Swagger 기반 API 명세 공유 및 아키텍처 구조 협의  
-https://www.notion.so/API-2ffe04be1b438100888be0685a7158ba?source=copy_link  
+**[🔗 API 명세서](https://www.notion.so/API-2ffe04be1b438100888be0685a7158ba?source=copy_link)**  
   
 #### 주 단위 스프린트, 커밋 컨벤션 규칙 및 Git, GitHub를 통한 PR 단위 코드 리뷰  
-https://api.snuxi.com/swagger-ui/index.html  
+**[🔗 Swagger UI](https://api.snuxi.com/swagger-ui/index.html)**  
+  
+| 커밋 컨벤션 | 작업 |  
+| --------- | ---- |  
+| feat(ure) | 기존 코드, 새로운 기능 추가 |  
+| fix, refactor | 기존 코드 수정 |  
+| hotfix | 긴급 수정 |  
+| add | 새로운 코드 추가 |  
   
 ## 아키텍처 구조(BE)   
 ![architecture](./img/snuxi.png)  
     
 ## 주요 기능  
-#### 1. 약관 동의와 학교 메일 인증 절차로 안전하게!  
-OAuth2 기반 학교 메일 로그인을 통해 인증된 구성원들끼리 택시팟을 이용할 수 있어요.
-![ability](./img/1.jpg)
-   
-#### 2. 택시팟 생성은 랜드마크 기반 출발, 도착지 지정으로 간편하게!  
-학교 안, 서울대입구역, 낙성대역, 녹두까지! 학우들이 자주 사용하는 대표 지역으로 빠르게 이용해보세요.  
-![ability1](./img/2.png)
+#### 학교 메일 인증 시스템 및 랜드마크 기반 택시팟 생성
+OAuth2 소셜 로그인으로 안전하게, 그리고 학우들이 자주 사용하는 대표 지역으로 구성
+![ability](./img/12.jpg)
   
-#### 3. 실시간 채팅으로 보다 빠르게!  
-WebSocket 기술을 기반으로 빠른 실시간 텍스트 채팅을 지원해요.  
-![ability2](./img/3.png)
-  
-#### 4. 부적절한 채팅은 No! 신고 기능으로 채팅방을 클린하게!  
-운영자가 채팅 내역을 모두 볼 수 있어요! 목적에 맞는 서비스 이용을 부탁드려요.  
-![ability3](./img/4.png)  
-  
-#### 5. 택시 호출은 카카오 택시로 간편하게!  
-애플리케이션 내부에서, 곧바로 출발지와 목적지가 입력된 카카오 택시 호출 어플로 이동할 수 있어요.  
-![ability4](./img/5.png)
+#### 실시간 텍스트 채팅방 및 신고 기능, 간편한 카카오택시 딥링크 기능 지원
+WebSocket 기술 기반 실시간 채팅, 카카오택시로의 간편한 리다이렉트
+![ability2](./img/345.png)
   
 ## 기술적 의사결정  
 #### 1. Kubernetes 대신 Nginx를 사용한 이유  
