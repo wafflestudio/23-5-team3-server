@@ -25,14 +25,75 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 2025.12 ~ 2026.02  
   
 ### 👩🏻‍💻 개발자
-<br />
+<br/>
 
-| [김기환(BE)](https://github.com/LOV-ING-U) | [김용현(BE)](https://github.com/Mined2022) | [나규하(FE)](https://github.com/Daniel-Na118) | [이유리(BE)](https://github.com/colswap) | [이정연(FE)](https://github.com/jylee05) |
-| :---: | :---: | :---: | :---: | :---: |
-| <a href="https://github.com/LOV-ING-U"><img src="https://avatars.githubusercontent.com/LOV-ING-U" width="120px" height="120px"></a> | <a href="https://github.com/Mined2022"><img src="https://avatars.githubusercontent.com/Mined2022" width="120px" height="120px"></a> | <a href="https://github.com/Daniel-Na118"><img src="https://avatars.githubusercontent.com/Daniel-Na118" width="120px" height="120px"></a> | <a href="https://github.com/colswap"><img src="https://avatars.githubusercontent.com/colswap" width="120px" height="120px"></a> | <a href="https://github.com/jylee05"><img src="https://avatars.githubusercontent.com/jylee05" width="120px" height="120px"></a> |
-| WebSocket 기반 메시징 시스템 및 팟 참여/퇴장 트랜잭션 구현 | 세션 기반 OAuth 로그인 및 신고 기능 구현 | (프론트엔드) | 배포 인프라 구축 및 FCM 기반 알림 구현 | (프론트엔드) |
+<table style="width:100%; table-layout:fixed;">
+  <tr>
+    <td style="width:20%; text-align:center;">
+      <a href="https://github.com/LOV-ING-U">김기환(BE)</a>
+    </td>
+    <td style="width:20%; text-align:center;">
+      <a href="https://github.com/Mined2022">김용현(BE)</a>
+    </td>
+    <td style="width:20%; text-align:center;">
+      <a href="https://github.com/Daniel-Na118">나규하(FE)</a>
+    </td>
+    <td style="width:20%; text-align:center;">
+      <a href="https://github.com/colswap">이유리(BE)</a>
+    </td>
+    <td style="width:20%; text-align:center;">
+      <a href="https://github.com/jylee05">이정연(FE)</a>
+    </td>
+  </tr>
 
-<br />
+  <tr>
+    <td style="width:20%; text-align:center;">
+      <a href="https://github.com/LOV-ING-U">
+        <img src="https://avatars.githubusercontent.com/LOV-ING-U" width="120" height="120" />
+      </a>
+    </td>
+    <td style="width:20%; text-align:center;">
+      <a href="https://github.com/Mined2022">
+        <img src="https://avatars.githubusercontent.com/Mined2022" width="120" height="120" />
+      </a>
+    </td>
+    <td style="width:20%; text-align:center;">
+      <a href="https://github.com/Daniel-Na118">
+        <img src="https://avatars.githubusercontent.com/Daniel-Na118" width="120" height="120" />
+      </a>
+    </td>
+    <td style="width:20%; text-align:center;">
+      <a href="https://github.com/colswap">
+        <img src="https://avatars.githubusercontent.com/colswap" width="120" height="120" />
+      </a>
+    </td>
+    <td style="width:20%; text-align:center;">
+      <a href="https://github.com/jylee05">
+        <img src="https://avatars.githubusercontent.com/jylee05" width="120" height="120" />
+      </a>
+    </td>
+  </tr>
+
+  <tr>
+    <td style="width:20%; text-align:center;">
+      WebSocket 기반 메시징 시스템 및<br/>팟 참여/퇴장 트랜잭션 구현
+    </td>
+    <td style="width:20%; text-align:center;">
+      세션 기반 OAuth 로그인 및<br/>신고 기능 구현
+    </td>
+    <td style="width:20%; text-align:center;">
+      (프론트엔드)
+    </td>
+    <td style="width:20%; text-align:center;">
+      배포 인프라 구축 및<br/>FCM 기반 알림 구현
+    </td>
+    <td style="width:20%; text-align:center;">
+      (프론트엔드)
+    </td>
+  </tr>
+</table>
+
+<br/>
   
 ## 2-1. 🧱 Tech Stack  
 #### Front-End  
@@ -82,7 +143,7 @@ WebSocket 기술 기반 실시간 채팅, 카카오택시로의 간편한 리다
 ![ability2](./img/345.png)
   
 ## 5. 트러블 슈팅 및 기술적 의사결정  
-#### 1. Kubernetes 대신 Nginx를 사용한 이유  
+#### 1. Kubernetes 대신 Nginx 사용  
 엄격한 인증이 필요한 서비스 특성 상, 서비스 규모가 작아 k8s가 지원하는 자동 확장/자동 복구 등의 기능보다는, Nginx를 통한 단순 프록시 기능만을 사용하여 관리 측면에서 유리합니다.  
 k8s를 사용하더라도 단일 pod로 충분할 것이라는 판단 하에, 설정이 간단한 Nginx를 사용하였습니다.  
   
@@ -90,7 +151,7 @@ k8s를 사용하더라도 단일 pod로 충분할 것이라는 판단 하에, �
 단일 Pod 환경에서 메시지 전송을 동적으로 제어하기 위해 @SendTo, 외부 메시지 브로커를 사용하지 않고 simpMessagingTemplate 및 pub시 기본 메시지 브로커를 사용하였습니다.  
 인증 흐름은 WebSocket Upgrade를 위한 Handshake, 메시지 요청 종류에 따른 적합성을 검토하는 Interceptor, 메시지를 전송하는 비즈니스 로직으로 제어 흐름을 분리하였습니다.  
   
-#### 3. 소셜 로그인 시 세션 방식을 선택한 이유  
+#### 3. 소셜 로그인 시 JWT 토큰 방식 대신 세션 방식 채택  
 HttpOnly 쿠키로 XSS 공격을 차단하고, 악성 유저 발생 시 서버에서 즉시 세션을 만료 시켜 강제 로그아웃 할 수 있는 제어권을 확보했습니다.
 
 로그인 시 DB의 userId를 세션에 함께 담도록 커스터마이징하여(CustomOAuth2User), API 요청마다 DB 조회 없이 유저를 식별할 수 있게 성능을 최적화했습니다.
