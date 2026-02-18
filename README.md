@@ -58,7 +58,7 @@ Client : https://github.com/wafflestudio/23-5-team3-web
     </tr>
     <tr>
       <td align="center" style="font-size: 12px;">WebSocket 기반 메시징 및<br>트랜잭션 구현</td>
-      <td align="center" style="font-size: 12px;">세션 기반 OAuth 및<br>신고 기능 구현</td>
+      <td align="center" style="font-size: 12px;">세션 기반 OAuth, <br>신고 기능 구현</td>
       <td align="center" style="font-size: 12px;">(프론트엔드)</td>
       <td align="center" style="font-size: 12px;">인프라 구축 및<br>FCM 알림 구현</td>
       <td align="center" style="font-size: 12px;">(프론트엔드)</td>
