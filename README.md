@@ -29,7 +29,7 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 
 | [김기환(BE)](https://github.com/LOV-ING-U) | [김용현(BE)](https://github.com/Mined2022) | [나규하(FE)](https://github.com/Daniel-Na118) | [이유리(BE)](https://github.com/colswap) | [이정연(FE)](https://github.com/jylee05) |
 | :---: | :---: | :---: | :---: | :---: |
-| <a href="https://github.com/LOV-ING-U"><img src="https://avatars.githubusercontent.com/LOV-ING-U" width="150px"></a> | <a href="https://github.com/Mined2022"><img src="https://avatars.githubusercontent.com/Mined2022" width="150px"></a> | <a href="https://github.com/Daniel-Na118"><img src="https://avatars.githubusercontent.com/Daniel-Na118" width="150px"></a> | <a href="https://github.com/colswap"><img src="https://avatars.githubusercontent.com/colswap" width="150px"></a> | <a href="https://github.com/jylee05"><img src="https://avatars.githubusercontent.com/jylee05" width="150px"></a> |
+| <a href="https://github.com/LOV-ING-U"><img src="https://avatars.githubusercontent.com/LOV-ING-U" width="120px" height="120px"></a> | <a href="https://github.com/Mined2022"><img src="https://avatars.githubusercontent.com/Mined2022" width="120px" height="120px"></a> | <a href="https://github.com/Daniel-Na118"><img src="https://avatars.githubusercontent.com/Daniel-Na118" width="120px" height="120px"></a> | <a href="https://github.com/colswap"><img src="https://avatars.githubusercontent.com/colswap" width="120px" height="120px"></a> | <a href="https://github.com/jylee05"><img src="https://avatars.githubusercontent.com/jylee05" width="120px" height="120px"></a> |
 | WebSocket 기반 메시징 시스템 및 팟 참여/퇴장 트랜잭션 구현 | 세션 기반 OAuth 로그인 및 신고 기능 구현 | (프론트엔드) | 배포 인프라 구축 및 FCM 기반 알림 구현 | (프론트엔드) |
 
 <br />
@@ -73,12 +73,12 @@ Client : https://github.com/wafflestudio/23-5-team3-web
 ![architecture](./img/snuxi.png)  
     
 ## 4. 주요 기능  
-#### 학교 메일 인증 시스템 및 랜드마크 기반 택시팟 생성
-OAuth2 소셜 로그인으로 안전하게, 그리고 학우들이 자주 사용하는 대표 지역으로 구성
+#### 학교 메일 인증 시스템 및 랜드마크 기반 택시팟 생성  
+OAuth2 소셜 로그인으로 안전하게, 그리고 학우들이 자주 사용하는 대표 지역으로 구성  
 ![ability](./img/12.png)
   
-#### 실시간 텍스트 채팅방 및 신고 기능, 간편한 카카오택시 딥링크 기능 지원
-WebSocket 기술 기반 실시간 채팅, 카카오택시로의 간편한 리다이렉트
+#### 실시간 텍스트 채팅방 및 신고 기능, 간편한 카카오택시 딥링크 기능 지원  
+WebSocket 기술 기반 실시간 채팅, 카카오택시로의 간편한 리다이렉트  
 ![ability2](./img/345.png)
   
 ## 5. 트러블 슈팅 및 기술적 의사결정  
