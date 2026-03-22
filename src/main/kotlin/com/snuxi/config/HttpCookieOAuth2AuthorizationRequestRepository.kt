@@ -18,7 +18,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository : AuthorizationRequestRepos
 
     override fun loadAuthorizationRequest(request: HttpServletRequest): OAuth2AuthorizationRequest? {
         val cookie = CookieUtils.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-        return cookie?.let { CookieUtils.deserialize(it, OAuth2AuthorizationRequest::class.java) }
+        return cookie?.let { CookieUtils.deserializeAuthRequest(it) }
     }
 
     override fun saveAuthorizationRequest(
