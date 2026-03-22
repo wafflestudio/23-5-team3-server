@@ -48,4 +48,4 @@ app:
     issuer: "snuxi"
 
 admin:
-  emails: "yujatea97@snu.ac.kr, jylee05@snu.ac.kr, danielna1118@snu.ac.kr, ghwan03@snu.ac.kr, mined2022@snu.ac.kr"
+  emails: ${ADMIN_EMAILS:}

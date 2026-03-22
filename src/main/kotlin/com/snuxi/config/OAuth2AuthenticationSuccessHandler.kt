@@ -14,6 +14,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component
 import org.springframework.web.util.UriComponents
 import org.springframework.web.util.UriComponentsBuilder
+import java.net.URI
 import java.net.URLDecoder
 
 @Component
@@ -38,6 +39,20 @@ class OAuth2AuthenticationSuccessHandler(
         redirectStrategy.sendRedirect(request, response, targetUrl)
     }
 
+    private val allowedRedirectHosts = setOf(
+        "snuxi.com",
+        "d2c0wdnl0iqvgb.cloudfront.net",
+        "d2j21bk78krg0p.cloudfront.net",
+        "localhost"
+    )
+
+    private fun isAllowedRedirectUri(uri: String): Boolean {
+        return try {
+            val host = URI(uri).host
+            host != null && allowedRedirectHosts.contains(host)
+        } catch (_: Exception) { false }
+    }
+
     override fun determineTargetUrl(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -49,7 +64,7 @@ class OAuth2AuthenticationSuccessHandler(
             HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME
         )?.value
 
-        val targetUri = if(!redirectUri.isNullOrBlank()) redirectUri else defaultTargetUrl
+        val targetUri = if(!redirectUri.isNullOrBlank() && isAllowedRedirectUri(redirectUri)) redirectUri else defaultTargetUrl
 
         // 약관 미동의인 상태이면 리다이렉트
         val principal = authentication.principal as? CustomOAuth2User
