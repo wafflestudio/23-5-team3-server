@@ -48,8 +48,7 @@ class PotService (
         if(minCapacity > maxCapacity) throw MinMaxReversedException()
         if(minCapacity < 2 || maxCapacity > 4) throw InvalidCountException()
 
-        // 새로운 예외를 생성할 수 없어, 이미 존재하는 exception 으로 처리
-        if(departureTime.isBefore(LocalDateTime.now())) throw RegionNotFoundException()
+        if(departureTime.isBefore(LocalDateTime.now())) throw PastDepartureTimeException()
         if(participantRepository.existsByUserId(userId)) throw DuplicateParticipationException()
 
         val save = potRepository.save(

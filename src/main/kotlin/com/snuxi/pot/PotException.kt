@@ -108,3 +108,10 @@ class AlreadyJoinedThisPotException :
         httpStatusCode = HttpStatus.BAD_REQUEST,
         msg = "이미 해당 택시팟에 참여하고 있습니다."
     )
+
+class PastDepartureTimeException :
+    PotException(
+        errorCode = 1010002400,
+        httpStatusCode = HttpStatus.BAD_REQUEST,
+        msg = "출발 시간은 현재 시각 이후여야 합니다."
+    )
