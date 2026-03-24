@@ -246,20 +246,23 @@ class PotService (
     }
 
     @Transactional(readOnly = true)
-    fun getMyPot(userId: Long): PotDto? {
-        val participation = participantRepository.findByUserId(userId) ?: return null
-        val pot = potRepository.findByIdOrNull(participation.potId) ?: return null
-        val owner = userRepository.findByIdOrNull(pot.ownerId)
-        val ownerName = owner ?.username ?: "알 수 없는 사용자"
-        val unreadCount = chatMessageRepository.countUnreadMessagesExceptBot(
-            pot.id!!,
-            participation.lastReadMessageId
-        )
-        val totalUnreadCount = chatMessageRepository.countByPotIdAndIdGreaterThan(
-            pot.id!!,
-            participation.lastReadMessageId
-        )
-        return PotDto.from(pot, ownerName, unreadCount, totalUnreadCount)
+    fun getMyPots(userId: Long): List<PotDto> {
+        val participations = participantRepository.findAllByUserId(userId)
+        if (participations.isEmpty()) return emptyList()
+        return participations.mapNotNull { participation ->
+            val pot = potRepository.findByIdOrNull(participation.potId) ?: return@mapNotNull null
+            val owner = userRepository.findByIdOrNull(pot.ownerId)
+            val ownerName = owner?.username ?: "알 수 없는 사용자"
+            val unreadCount = chatMessageRepository.countUnreadMessagesExceptBot(
+                pot.id!!,
+                participation.lastReadMessageId
+            )
+            val totalUnreadCount = chatMessageRepository.countByPotIdAndIdGreaterThan(
+                pot.id!!,
+                participation.lastReadMessageId
+            )
+            PotDto.from(pot, ownerName, unreadCount, totalUnreadCount)
+        }
     }
 
     @Transactional

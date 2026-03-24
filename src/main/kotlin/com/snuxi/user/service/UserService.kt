@@ -47,7 +47,7 @@ class UserService(
         val user = userRepository.findById(userId)
             .orElseThrow { UserNotFoundException() }
         // 참여 중인 팟 있다면 탈퇴
-        participantRepository.findByUserId(userId)?.let { participation ->
+        participantRepository.findAllByUserId(userId).forEach { participation ->
             potService.leavePot(userId, participation.potId)
         }
         chatMessageRepository.anonymizeSender(userId, 0L)

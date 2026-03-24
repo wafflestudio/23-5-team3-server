@@ -12,7 +12,6 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
         userId: Long,
         potId: Long
     ): Boolean
-    fun findByUserId(userId: Long): Participants?
     fun findAllByUserId(userId: Long): List<Participants>
     fun countByUserId(userId: Long): Long
     fun findAllByPotId(potId: Long): List<Participants>
