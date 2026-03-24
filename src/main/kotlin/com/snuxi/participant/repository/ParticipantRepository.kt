@@ -12,10 +12,9 @@ interface ParticipantRepository : JpaRepository<Participants, Long>{
         userId: Long,
         potId: Long
     ): Boolean
-    fun existsByUserId(
-        userId: Long
-    ): Boolean
     fun findByUserId(userId: Long): Participants?
+    fun findAllByUserId(userId: Long): List<Participants>
+    fun countByUserId(userId: Long): Long
     fun findAllByPotId(potId: Long): List<Participants>
     fun findByUserIdAndPotId(userId: Long, potId: Long): Participants?
     fun deleteByUserIdAndPotId(userId: Long, potId: Long)

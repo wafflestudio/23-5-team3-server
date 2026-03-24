@@ -25,11 +25,11 @@ class InvalidCountException :
             msg = "최소 인원수는 2명 이상, 최대 인원수는 4명 이하로 설정해주세요."
         )
 
-class DuplicateParticipationException :
+class MaxPotLimitException :
         PotException(
-            errorCode = 1010010400,
-            httpStatusCode = HttpStatus.BAD_REQUEST,
-            msg = "한 명이 2개 이상의 택시팟 참여에 관여할 수 없습니다."
+            errorCode = 1010012409,
+            httpStatusCode = HttpStatus.CONFLICT,
+            msg = "최대 3개의 택시팟에만 동시 참여할 수 있습니다."
         )
 
 class PotNotFoundException :
