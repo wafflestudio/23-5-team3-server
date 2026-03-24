@@ -86,10 +86,10 @@ class PotController (
     }
 
     @GetMapping("/users/me/pot")
-    fun getMyPot(
+    fun getMyPots(
         @AuthenticationPrincipal principal: CustomOAuth2User,
-    ): PotDto? {
-        return potService.getMyPot(principal.userId)
+    ): List<PotDto> {
+        return potService.getMyPots(principal.userId)
     }
 
     @GetMapping("/rooms/{roomId}/kakao-deep-link")

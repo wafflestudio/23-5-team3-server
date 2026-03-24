@@ -49,7 +49,7 @@ class PotService (
         if(minCapacity < 2 || maxCapacity > 4) throw InvalidCountException()
 
         if(departureTime.isBefore(LocalDateTime.now())) throw PastDepartureTimeException()
-        if(participantRepository.existsByUserId(userId)) throw DuplicateParticipationException()
+        if(participantRepository.countByUserId(userId) >= 3) throw MaxPotLimitException()
 
         val save = potRepository.save(
             Pots(
@@ -73,7 +73,6 @@ class PotService (
             )
         )
 
-        updateActivePotIdUsers(listOf(userId), save.id)
 
         // 챗봇 메시지 전송
         val username = userRepository.findById(userId).orElseThrow {
@@ -107,7 +106,6 @@ class PotService (
             )
         }
 
-        if(users.isNotEmpty()) updateActivePotIdUsers(users, null)
 
         // 2. 방장이면 방 삭제
         participantRepository.deleteAllByPotId(potId)
@@ -120,17 +118,8 @@ class PotService (
         if (user.isSuspended()) throw SuspendedUserException("정지된 사용자는 팟에 참여할 수 없습니다.")
 
         // 이미 참여한 사람이 또 참여 불가
-        val existingParticipation = participantRepository.findByUserId(userId)
-
-        if (existingParticipation != null) {
-            if (existingParticipation.potId == potId) {
-                // 1. 참여하려는 팟이 현재 참여 중인 팟과 같을 때
-                throw AlreadyJoinedThisPotException()
-            } else {
-                // 2. 다른 팟에 이미 참여 중일 때
-                throw DuplicateParticipationException()
-            }
-        }
+        if(participantRepository.existsByUserIdAndPotId(userId, potId)) throw AlreadyJoinedThisPotException()
+        if(participantRepository.countByUserId(userId) >= 3) throw MaxPotLimitException()
 
         // 팟이 없으면 예외 던짐
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
@@ -167,7 +156,6 @@ class PotService (
             )
         }
         // user active pot id 또한 업데이트
-        updateActivePotIdUsers(listOf(userId), potId)
 
         // 챗봇 자동 메시지 전송
         val username = userRepository.findById(userId).orElseThrow {
@@ -183,7 +171,6 @@ class PotService (
         if (!participantRepository.existsByUserIdAndPotId(userId, potId)) throw NotParticipatingException()
 
         // user active pot id & participant 정보 삭제
-        updateActivePotIdUsers(listOf(userId), null)
         val deletedCount = participantRepository.deleteByUserIdAndPotIdReturnCount(userId, potId)
         if(deletedCount == 0) throw NotParticipatingException()
 
@@ -259,27 +246,23 @@ class PotService (
     }
 
     @Transactional(readOnly = true)
-    fun getMyPot(userId: Long): PotDto? {
-        val participation = participantRepository.findByUserId(userId) ?: return null
-        val pot = potRepository.findByIdOrNull(participation.potId) ?: return null
-        val owner = userRepository.findByIdOrNull(pot.ownerId)
-        val ownerName = owner ?.username ?: "알 수 없는 사용자"
-        val unreadCount = chatMessageRepository.countUnreadMessagesExceptBot(
-            pot.id!!,
-            participation.lastReadMessageId
-        )
-        val totalUnreadCount = chatMessageRepository.countByPotIdAndIdGreaterThan(
-            pot.id!!,
-            participation.lastReadMessageId
-        )
-        return PotDto.from(pot, ownerName, unreadCount, totalUnreadCount)
-    }
-
-    private fun updateActivePotIdUsers(
-        userIds: List<Long>,
-        potId: Long?
-    ) {
-        userRepository.updateActivePotIdForUsers(userIds, potId)
+    fun getMyPots(userId: Long): List<PotDto> {
+        val participations = participantRepository.findAllByUserId(userId)
+        if (participations.isEmpty()) return emptyList()
+        return participations.mapNotNull { participation ->
+            val pot = potRepository.findByIdOrNull(participation.potId) ?: return@mapNotNull null
+            val owner = userRepository.findByIdOrNull(pot.ownerId)
+            val ownerName = owner?.username ?: "알 수 없는 사용자"
+            val unreadCount = chatMessageRepository.countUnreadMessagesExceptBot(
+                pot.id!!,
+                participation.lastReadMessageId
+            )
+            val totalUnreadCount = chatMessageRepository.countByPotIdAndIdGreaterThan(
+                pot.id!!,
+                participation.lastReadMessageId
+            )
+            PotDto.from(pot, ownerName, unreadCount, totalUnreadCount)
+        }
     }
 
     @Transactional
@@ -293,7 +276,6 @@ class PotService (
         val targetUser = userRepository.findByIdOrNull(targetUserId) ?: throw UserNotFoundException()
         val targetUserName = targetUser.username
 
-        updateActivePotIdUsers(listOf(targetUserId), null)
 
         // userId -> targetUserId로 수정, ANd -> And로 수정
         val deletedCount = participantRepository.deleteByUserIdAndPotIdReturnCount(targetUserId, potId)

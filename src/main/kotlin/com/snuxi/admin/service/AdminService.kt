@@ -39,7 +39,7 @@ class AdminService(
         user.suspensionCount += 1
         
         //leavePot 실행. 정지 시 나가지도록 처리
-        participantRepository.findByUserId(targetUserId)?.let { participation ->
+        participantRepository.findAllByUserId(targetUserId).forEach { participation ->
             potService.leavePot(targetUserId, participation.potId)
         }
 
