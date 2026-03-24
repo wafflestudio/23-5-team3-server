@@ -20,6 +20,12 @@ class CustomAuthenticationFailureHandler : SimpleUrlAuthenticationFailureHandler
         response: HttpServletResponse,
         exception: AuthenticationException
     ) {
+        // 0. 실패한 OAuth 쿠키 정리 (재시도 시 이전 계정 자동 선택 방지)
+        CookieUtils.deleteCookie(request, response,
+            HttpCookieOAuth2AuthorizationRequestRepository.OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+        CookieUtils.deleteCookie(request, response,
+            HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME)
+
         // 1. 예외 타입에 따라 에러 메시지 결정
         val errorMessage = when (exception) {
             is NotSnuMailException -> exception.message ?: "서울대학교 계정만 사용 가능합니다."
