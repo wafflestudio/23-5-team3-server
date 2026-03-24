@@ -239,9 +239,14 @@ class PotService (
         val ownerIds = listPots.content.map { it.ownerId }.distinct()
         val ownersMap = userRepository.findAllById(ownerIds).associateBy({ it.id!! }, { it.username })
 
+        val landmarkIds = listPots.content.flatMap { listOf(it.departureId, it.destinationId) }.distinct()
+        val landmarksMap = landmarkRepository.findAllById(landmarkIds).associateBy({ it.id!! }, { it.landmarkName })
+
         return listPots.map { pot ->
             val ownerName = ownersMap[pot.ownerId] ?: "알 수 없는 사용자"
-            PotDto.from(pot, ownerName)
+            val depName = landmarksMap[pot.departureId] ?: "알 수 없음"
+            val destName = landmarksMap[pot.destinationId] ?: "알 수 없음"
+            PotDto.from(pot, ownerName, depName, destName)
         }
     }
 
@@ -249,10 +254,16 @@ class PotService (
     fun getMyPots(userId: Long): List<PotDto> {
         val participations = participantRepository.findAllByUserId(userId)
         if (participations.isEmpty()) return emptyList()
-        return participations.mapNotNull { participation ->
-            val pot = potRepository.findByIdOrNull(participation.potId) ?: return@mapNotNull null
+
+        val pots = participations.mapNotNull { potRepository.findByIdOrNull(it.potId)?.let { pot -> it to pot } }
+        val landmarkIds = pots.flatMap { (_, pot) -> listOf(pot.departureId, pot.destinationId) }.distinct()
+        val landmarksMap = landmarkRepository.findAllById(landmarkIds).associateBy({ it.id!! }, { it.landmarkName })
+
+        return pots.map { (participation, pot) ->
             val owner = userRepository.findByIdOrNull(pot.ownerId)
             val ownerName = owner?.username ?: "알 수 없는 사용자"
+            val depName = landmarksMap[pot.departureId] ?: "알 수 없음"
+            val destName = landmarksMap[pot.destinationId] ?: "알 수 없음"
             val unreadCount = chatMessageRepository.countUnreadMessagesExceptBot(
                 pot.id!!,
                 participation.lastReadMessageId
@@ -261,7 +272,7 @@ class PotService (
                 pot.id!!,
                 participation.lastReadMessageId
             )
-            PotDto.from(pot, ownerName, unreadCount, totalUnreadCount)
+            PotDto.from(pot, ownerName, depName, destName, unreadCount, totalUnreadCount)
         }
     }
 
@@ -323,7 +334,9 @@ class PotService (
         pot.isLocked = !pot.isLocked
 
         val ownerName = userRepository.findByIdOrNull(pot.ownerId)?.username ?: "알 수 없는 사용자"
-        return PotDto.from(pot, ownerName)
+        val depName = landmarkRepository.findByIdOrNull(pot.departureId)?.landmarkName ?: "알 수 없음"
+        val destName = landmarkRepository.findByIdOrNull(pot.destinationId)?.landmarkName ?: "알 수 없음"
+        return PotDto.from(pot, ownerName, depName, destName)
     }
 
     @Transactional(readOnly = true)
