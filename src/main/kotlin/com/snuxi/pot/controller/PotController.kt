@@ -109,8 +109,10 @@ class PotController (
 
     @GetMapping("/rooms/{roomId}/participants")
     fun getPotParticipants(
+        @AuthenticationPrincipal principal: CustomOAuth2User,
         @PathVariable roomId: Long
     ): ResponseEntity<List<PotParticipantResponse>> {
+        potService.verifyParticipant(roomId, principal.userId)
         val participants = potService.getPotParticipants(roomId)
         return ResponseEntity.ok(participants)
     }

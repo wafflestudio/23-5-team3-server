@@ -73,6 +73,11 @@ class ChatMessageService (
     }
 
 
+    fun verifyParticipant(potId: Long, userId: Long) {
+        if (!participantRepository.existsByUserIdAndPotId(userId, potId))
+            throw NonParticipatingThisPotException()
+    }
+
     // for debug
     @Transactional(readOnly = true)
     fun countMessages(potId: Long): Long {

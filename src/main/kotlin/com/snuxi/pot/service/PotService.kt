@@ -344,6 +344,11 @@ class PotService (
         return PotDto.from(pot, ownerName)
     }
 
+    fun verifyParticipant(potId: Long, userId: Long) {
+        if (!participantRepository.existsByUserIdAndPotId(userId, potId))
+            throw NotParticipatingException()
+    }
+
     @Transactional(readOnly = true)
     fun getPotParticipants(potId: Long): List<PotParticipantResponse> {
         // 팟이 존재하는 지 확인

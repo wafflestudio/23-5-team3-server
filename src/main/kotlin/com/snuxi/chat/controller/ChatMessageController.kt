@@ -27,6 +27,8 @@ class ChatMessageController (
     fun countMessages(
         @PathVariable("roomId") potId: Long
     ): Map<String, Long> {
+        val userId = currentUserIdResolver.getCurrentUserId()
+        chatMessageService.verifyParticipant(potId, userId)
         val count = chatMessageService.countMessages(potId)
         return mapOf("count" to count)
     }
