@@ -85,7 +85,7 @@ class PotController (
         return ResponseEntity.noContent().build()
     }
 
-    @GetMapping("/users/me/pot")
+    @GetMapping("/users/me/pots")
     fun getMyPots(
         @AuthenticationPrincipal principal: CustomOAuth2User,
     ): List<PotDto> {
