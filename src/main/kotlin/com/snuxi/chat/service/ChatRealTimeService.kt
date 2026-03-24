@@ -58,6 +58,9 @@ class ChatRealTimeService (
             senderUsername = sender.username,
             senderProfileImageUrl = sender.profileImageUrl
         )
+        // 보낸 사람의 읽음 상태 갱신 (자기 메시지가 안 읽음으로 카운트되는 버그 방지)
+        participantRepository.updateLastReadMessageId(userId, roomId, saved.id!!)
+
         // broadcast
         simpMessagingTemplate.convertAndSend("/sub/rooms/$roomId", itemDto)
 
