@@ -27,7 +27,7 @@ class User(
     @Enumerated(EnumType.STRING)
     var role: Role = Role.USER,
 
-    val activePotId: Long? = null,
+    var activePotId: Long? = null,
 
     @Column(name = "notification_enabled")
     var notificationEnabled: Boolean = true,
