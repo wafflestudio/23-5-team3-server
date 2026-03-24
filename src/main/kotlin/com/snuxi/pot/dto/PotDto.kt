@@ -9,7 +9,9 @@ data class PotDto(
     val ownerId: Long,
     val ownerName: String,
     val departureId: Long,
+    val departureName: String,
     val destinationId: Long,
+    val destinationName: String,
     val departureTime: LocalDateTime,
     val minCapacity: Int,
     val maxCapacity: Int,
@@ -21,12 +23,21 @@ data class PotDto(
     val isLocked: Boolean = false
 ) {
     companion object {
-        fun from(entity: Pots, ownerName: String, unreadCount: Long = 0, totalUnreadCount: Long = 0) = PotDto(
+        fun from(
+            entity: Pots,
+            ownerName: String,
+            departureName: String = "",
+            destinationName: String = "",
+            unreadCount: Long = 0,
+            totalUnreadCount: Long = 0
+        ) = PotDto(
             id = entity.id!!,
             ownerId = entity.ownerId,
             ownerName = ownerName,
             departureId = entity.departureId,
+            departureName = departureName,
             destinationId = entity.destinationId,
+            destinationName = destinationName,
             departureTime = entity.departureTime,
             minCapacity = entity.minCapacity,
             maxCapacity = entity.maxCapacity,
