@@ -1,5 +1,6 @@
 package com.snuxi.config
 
+import com.snuxi.global.util.CookieUtils
 import com.snuxi.user.NotSnuMailException
 import com.snuxi.user.SuspendedUserException
 import jakarta.servlet.http.HttpServletRequest
