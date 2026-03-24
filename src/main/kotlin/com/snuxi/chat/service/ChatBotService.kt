@@ -37,7 +37,6 @@ class ChatBotService (
                 username = BOT_USERNAME,
                 profileImageUrl = null,
                 role = Role.CHATBOT,
-                activePotId = null,
                 notificationEnabled = false
             )
         )

@@ -73,7 +73,6 @@ class PotService (
             )
         )
 
-        updateActivePotIdUsers(listOf(userId), save.id)
 
         // 챗봇 메시지 전송
         val username = userRepository.findById(userId).orElseThrow {
@@ -107,7 +106,6 @@ class PotService (
             )
         }
 
-        if(users.isNotEmpty()) updateActivePotIdUsers(users, null)
 
         // 2. 방장이면 방 삭제
         participantRepository.deleteAllByPotId(potId)
@@ -167,7 +165,6 @@ class PotService (
             )
         }
         // user active pot id 또한 업데이트
-        updateActivePotIdUsers(listOf(userId), potId)
 
         // 챗봇 자동 메시지 전송
         val username = userRepository.findById(userId).orElseThrow {
@@ -183,7 +180,6 @@ class PotService (
         if (!participantRepository.existsByUserIdAndPotId(userId, potId)) throw NotParticipatingException()
 
         // user active pot id & participant 정보 삭제
-        updateActivePotIdUsers(listOf(userId), null)
         val deletedCount = participantRepository.deleteByUserIdAndPotIdReturnCount(userId, potId)
         if(deletedCount == 0) throw NotParticipatingException()
 
@@ -275,13 +271,6 @@ class PotService (
         return PotDto.from(pot, ownerName, unreadCount, totalUnreadCount)
     }
 
-    private fun updateActivePotIdUsers(
-        userIds: List<Long>,
-        potId: Long?
-    ) {
-        userRepository.updateActivePotIdForUsers(userIds, potId)
-    }
-
     @Transactional
     fun kickParticipant(requestUserId: Long, potId: Long, targetUserId: Long) {
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
@@ -293,7 +282,6 @@ class PotService (
         val targetUser = userRepository.findByIdOrNull(targetUserId) ?: throw UserNotFoundException()
         val targetUserName = targetUser.username
 
-        updateActivePotIdUsers(listOf(targetUserId), null)
 
         // userId -> targetUserId로 수정, ANd -> And로 수정
         val deletedCount = participantRepository.deleteByUserIdAndPotIdReturnCount(targetUserId, potId)
