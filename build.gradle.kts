@@ -5,6 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "2.0.21"
 	id("org.flywaydb.flyway") version "10.1.0"
+	id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
 }
 
 group = "com.snuxi"
@@ -45,6 +46,7 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+	testImplementation("io.mockk:mockk:1.13.16")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
 	runtimeOnly("com.mysql:mysql-connector-j")
@@ -72,4 +74,11 @@ allOpen {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+ktlint {
+	version.set("1.5.0")
+	android.set(false)
+	outputToConsole.set(true)
+	ignoreFailures.set(false)
 }
