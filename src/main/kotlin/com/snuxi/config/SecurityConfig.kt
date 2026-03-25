@@ -23,7 +23,8 @@ class SecurityConfig(
     val httpCookieOAuth2AuthorizationRequestRepository: HttpCookieOAuth2AuthorizationRequestRepository,
     val oAuth2AuthenticationSuccessHandler: OAuth2AuthenticationSuccessHandler,
     val customLogoutSuccessHandler: CustomLogoutSuccessHandler,
-    val customAuthenticationFailureHandler: CustomAuthenticationFailureHandler
+    val customAuthenticationFailureHandler: CustomAuthenticationFailureHandler,
+    val customOAuth2AuthorizationRequestResolver: CustomOAuth2AuthorizationRequestResolver,
 
 ) {
     @Bean
@@ -61,6 +62,7 @@ class SecurityConfig(
                 it.loginPage("/login")
                 it.authorizationEndpoint { endpoint ->
                     endpoint.authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository)
+                    endpoint.authorizationRequestResolver(customOAuth2AuthorizationRequestResolver)
                 }
                 it.userInfoEndpoint {
                     endpoint ->
