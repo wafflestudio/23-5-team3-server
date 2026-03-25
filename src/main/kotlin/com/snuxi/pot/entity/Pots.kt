@@ -1,5 +1,6 @@
 package com.snuxi.pot.entity
 
+import com.snuxi.pot.KakaoCallStatus
 import com.snuxi.pot.PotStatus
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -33,7 +34,14 @@ class Pots (
     @Enumerated(EnumType.STRING)
     var status: PotStatus,
     @Column(name = "is_locked")
-    var isLocked: Boolean = false
+    var isLocked: Boolean = false,
+    @Column(name = "kakao_call_status")
+    @Enumerated(EnumType.STRING)
+    var kakaoCallStatus: KakaoCallStatus = KakaoCallStatus.NOT_CALLED,
+    @Column(name = "kakao_call_at")
+    var kakaoCallAt: LocalDateTime? = null,
+    @Column(name = "kakao_call_error", length = 500)
+    var kakaoCallError: String? = null
 
 ) {
     @CreatedDate

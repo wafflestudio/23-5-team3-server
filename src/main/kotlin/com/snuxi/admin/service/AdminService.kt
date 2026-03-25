@@ -1,5 +1,7 @@
 package com.snuxi.admin.service
 
+import com.snuxi.admin.dto.AdminPotListItem
+import com.snuxi.admin.dto.AdminPotListResponse
 import com.snuxi.admin.dto.AdminStatsResponse
 import com.snuxi.admin.dto.AdminUserListItem
 import com.snuxi.admin.dto.AdminUserListResponse
@@ -7,6 +9,7 @@ import com.snuxi.admin.dto.StatsAnalysis
 import com.snuxi.admin.dto.StatsSummary
 import com.snuxi.chat.repository.ChatMessageRepository
 import com.snuxi.participant.repository.ParticipantRepository
+import com.snuxi.pot.repository.LandmarkRepository
 import com.snuxi.pot.repository.PotRepository
 import com.snuxi.pot.service.PotService
 import com.snuxi.security.CustomOAuth2User
@@ -27,7 +30,8 @@ class AdminService(
     private val chatMessageRepository: ChatMessageRepository,
     private val reportedRepository: ReportedRepository,
     private val potService: PotService,
-    private val participantRepository: ParticipantRepository
+    private val participantRepository: ParticipantRepository,
+    private val landmarkRepository: LandmarkRepository
 ) {
 
     @Transactional
@@ -120,6 +124,42 @@ class AdminService(
             size = userPage.size,
             totalElements = userPage.totalElements,
             totalPages = userPage.totalPages
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun getPots(page: Int, size: Int, status: String): AdminPotListResponse {
+        val safePage = page.coerceAtLeast(0)
+        val safeSize = size.coerceIn(1, 100)
+        val normalizedStatus = status.lowercase()
+        require(normalizedStatus in setOf("all", "open", "closed")) {
+            "status must be one of: all, open, closed"
+        }
+
+        val pageable = PageRequest.of(safePage, safeSize)
+        val potPage = potRepository.searchAdminPots(normalizedStatus, pageable)
+
+        val landmarkIds = potPage.content.flatMap { listOf(it.departureId, it.destinationId) }.distinct()
+        val landmarksMap = landmarkRepository.findAllById(landmarkIds).associateBy({ it.id!! }, { it.landmarkName })
+
+        return AdminPotListResponse(
+            content = potPage.content.map { pot ->
+                AdminPotListItem(
+                    potId = pot.id!!,
+                    departureName = landmarksMap[pot.departureId] ?: "알 수 없음",
+                    destinationName = landmarksMap[pot.destinationId] ?: "알 수 없음",
+                    departureTime = pot.departureTime,
+                    participantCount = pot.currentCount,
+                    kakaoCallStatus = pot.kakaoCallStatus.name,
+                    kakaoCallAt = pot.kakaoCallAt,
+                    kakaoCallError = pot.kakaoCallError,
+                    createdAt = pot.createdAt
+                )
+            },
+            page = potPage.number,
+            size = potPage.size,
+            totalElements = potPage.totalElements,
+            totalPages = potPage.totalPages
         )
     }
 }

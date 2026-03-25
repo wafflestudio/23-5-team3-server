@@ -1,5 +1,6 @@
 package com.snuxi.admin.controller
 
+import com.snuxi.admin.dto.AdminPotListResponse
 import com.snuxi.admin.dto.AdminStatsResponse
 import com.snuxi.admin.dto.AdminUserListResponse
 import com.snuxi.admin.dto.SuspendRequest
@@ -42,5 +43,14 @@ class AdminController(
         @RequestParam(defaultValue = "all") status: String
     ): ResponseEntity<AdminUserListResponse> {
         return ResponseEntity.ok(adminService.getUsers(page, size, q, status))
+    }
+
+    @GetMapping("/pots")
+    fun getPots(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(defaultValue = "all") status: String
+    ): ResponseEntity<AdminPotListResponse> {
+        return ResponseEntity.ok(adminService.getPots(page, size, status))
     }
 }
