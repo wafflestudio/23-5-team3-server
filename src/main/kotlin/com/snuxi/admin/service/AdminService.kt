@@ -1,21 +1,23 @@
 package com.snuxi.admin.service
 
-import com.snuxi.admin.dto.*
+import com.snuxi.admin.dto.AdminStatsResponse
+import com.snuxi.admin.dto.AdminUserListItem
+import com.snuxi.admin.dto.AdminUserListResponse
+import com.snuxi.admin.dto.StatsAnalysis
+import com.snuxi.admin.dto.StatsSummary
 import com.snuxi.chat.repository.ChatMessageRepository
-import com.snuxi.pot.PotStatus
+import com.snuxi.participant.repository.ParticipantRepository
 import com.snuxi.pot.repository.PotRepository
+import com.snuxi.pot.service.PotService
 import com.snuxi.security.CustomOAuth2User
-import com.snuxi.user.repository.UserRepository
 import com.snuxi.user.UserNotFoundException
 import com.snuxi.user.repository.ReportedRepository
-import com.snuxi.pot.service.PotService
-import com.snuxi.participant.repository.ParticipantRepository
+import com.snuxi.user.repository.UserRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.security.core.session.SessionRegistry
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 @Service
 class AdminService(
@@ -83,5 +85,41 @@ class AdminService(
         )
 
         return AdminStatsResponse(summary, analysis)
+    }
+
+    @Transactional(readOnly = true)
+    fun getUsers(page: Int, size: Int, q: String?, status: String): AdminUserListResponse {
+        val safePage = page.coerceAtLeast(0)
+        val safeSize = size.coerceIn(1, 100)
+        val normalizedStatus = status.lowercase()
+        require(normalizedStatus in setOf("all", "active", "suspended")) {
+            "status must be one of: all, active, suspended"
+        }
+
+        val pageable = PageRequest.of(safePage, safeSize)
+        val now = LocalDateTime.now()
+        val userPage = userRepository.searchAdminUsers(
+            q = q?.trim()?.takeIf { it.isNotBlank() },
+            status = normalizedStatus,
+            now = now,
+            pageable = pageable
+        )
+
+        return AdminUserListResponse(
+            content = userPage.content.map { user ->
+                AdminUserListItem(
+                    id = user.id!!,
+                    email = user.email,
+                    username = user.username,
+                    role = user.role.name,
+                    createdAt = user.createdAt,
+                    suspended = user.suspendedUntil?.isAfter(now) ?: false
+                )
+            },
+            page = userPage.number,
+            size = userPage.size,
+            totalElements = userPage.totalElements,
+            totalPages = userPage.totalPages
+        )
     }
 }
