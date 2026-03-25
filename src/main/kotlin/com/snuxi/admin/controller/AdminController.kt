@@ -1,6 +1,7 @@
 package com.snuxi.admin.controller
 
 import com.snuxi.admin.dto.AdminStatsResponse
+import com.snuxi.admin.dto.AdminUserListResponse
 import com.snuxi.admin.dto.SuspendRequest
 import com.snuxi.admin.service.AdminService
 import org.springframework.http.ResponseEntity
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -30,5 +32,15 @@ class AdminController(
     @GetMapping("/stats")
     fun getAdminStats(): ResponseEntity<AdminStatsResponse> {
         return ResponseEntity.ok(adminService.getFullStatistics())
+    }
+
+    @GetMapping("/users")
+    fun getUsers(
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int,
+        @RequestParam(required = false) q: String?,
+        @RequestParam(defaultValue = "all") status: String
+    ): ResponseEntity<AdminUserListResponse> {
+        return ResponseEntity.ok(adminService.getUsers(page, size, q, status))
     }
 }
