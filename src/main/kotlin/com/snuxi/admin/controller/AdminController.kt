@@ -4,6 +4,7 @@ import com.snuxi.admin.dto.AdminPotListResponse
 import com.snuxi.admin.dto.AdminStatsResponse
 import com.snuxi.admin.dto.AdminUserListResponse
 import com.snuxi.admin.dto.SuspendRequest
+import com.snuxi.admin.dto.UnsuspendResponse
 import com.snuxi.admin.service.AdminService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -28,6 +29,14 @@ class AdminController(
         adminService.suspendUser(userId, request.days)
 
         return ResponseEntity.ok("유저($userId)를 ${request.days}일간 정지시켰습니다.")
+    }
+
+    @PostMapping("/users/{userId}/unsuspend")
+    fun unsuspendUser(
+        @PathVariable userId: Long
+    ): ResponseEntity<UnsuspendResponse> {
+        adminService.unsuspendUser(userId)
+        return ResponseEntity.ok(UnsuspendResponse(userId = userId))
     }
 
     @GetMapping("/stats")

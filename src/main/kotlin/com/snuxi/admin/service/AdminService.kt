@@ -65,6 +65,14 @@ class AdminService(
         }
     }
 
+    @Transactional
+    fun unsuspendUser(targetUserId: Long) {
+        val user = userRepository.findById(targetUserId)
+            .orElseThrow { UserNotFoundException() }
+
+        user.suspendedUntil = null
+    }
+
     @Transactional(readOnly = true)
     fun getFullStatistics(): AdminStatsResponse {
         val now = LocalDateTime.now()
