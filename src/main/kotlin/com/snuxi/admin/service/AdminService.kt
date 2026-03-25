@@ -1,5 +1,6 @@
 package com.snuxi.admin.service
 
+import com.snuxi.admin.InvalidAdminFilterException
 import com.snuxi.admin.dto.AdminPotListItem
 import com.snuxi.admin.dto.AdminPotListResponse
 import com.snuxi.admin.dto.AdminStatsResponse
@@ -104,8 +105,8 @@ class AdminService(
         val safePage = page.coerceAtLeast(0)
         val safeSize = size.coerceIn(1, 100)
         val normalizedStatus = status.lowercase()
-        require(normalizedStatus in setOf("all", "active", "suspended")) {
-            "status must be one of: all, active, suspended"
+        if (normalizedStatus !in setOf("all", "active", "suspended")) {
+            throw InvalidAdminFilterException("status must be one of: all, active, suspended")
         }
 
         val pageable = PageRequest.of(safePage, safeSize)
@@ -140,8 +141,8 @@ class AdminService(
         val safePage = page.coerceAtLeast(0)
         val safeSize = size.coerceIn(1, 100)
         val normalizedStatus = status.lowercase()
-        require(normalizedStatus in setOf("all", "open", "closed")) {
-            "status must be one of: all, open, closed"
+        if (normalizedStatus !in setOf("all", "open", "closed")) {
+            throw InvalidAdminFilterException("status must be one of: all, open, closed")
         }
 
         val pageable = PageRequest.of(safePage, safeSize)
@@ -158,9 +159,9 @@ class AdminService(
                     destinationName = landmarksMap[pot.destinationId] ?: "알 수 없음",
                     departureTime = pot.departureTime,
                     participantCount = pot.currentCount,
-                    kakaoCallStatus = pot.kakaoCallStatus.name,
-                    kakaoCallAt = pot.kakaoCallAt,
-                    kakaoCallError = pot.kakaoCallError,
+                    kakaoDeepLinkStatus = pot.kakaoCallStatus.name,
+                    kakaoDeepLinkAt = pot.kakaoCallAt,
+                    kakaoDeepLinkError = pot.kakaoCallError,
                     createdAt = pot.createdAt
                 )
             },

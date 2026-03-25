@@ -17,8 +17,8 @@ data class AdminPotListItem(
     val destinationName: String,
     val departureTime: LocalDateTime,
     val participantCount: Int,
-    val kakaoCallStatus: String,
-    val kakaoCallAt: LocalDateTime?,
-    val kakaoCallError: String?,
+    val kakaoDeepLinkStatus: String,
+    val kakaoDeepLinkAt: LocalDateTime?,
+    val kakaoDeepLinkError: String?,
     val createdAt: Instant?
 )
