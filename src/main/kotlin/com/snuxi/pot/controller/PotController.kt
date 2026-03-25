@@ -4,6 +4,7 @@ import com.snuxi.pot.dto.CreatePotRequest
 import com.snuxi.pot.dto.CreatePotResponse
 import com.snuxi.pot.service.PotService
 import com.snuxi.pot.dto.PotDto
+import com.snuxi.pot.dto.TrackKakaoDeepLinkRequest
 import com.snuxi.security.CustomOAuth2User
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -97,6 +98,21 @@ class PotController (
         @PathVariable("roomId") roomId: Long,
         @AuthenticationPrincipal principal: CustomOAuth2User
     ): String = potService.generateKakaoDeepLink(roomId, principal.userId)
+
+    @PostMapping("/rooms/{roomId}/kakao-deep-link/track")
+    fun trackKakaoDeepLinkAttempt(
+        @PathVariable("roomId") roomId: Long,
+        @AuthenticationPrincipal principal: CustomOAuth2User,
+        @RequestBody request: TrackKakaoDeepLinkRequest
+    ): ResponseEntity<Void> {
+        potService.trackKakaoDeepLinkAttempt(
+            potId = roomId,
+            userId = principal.userId,
+            success = request.success,
+            error = request.error
+        )
+        return ResponseEntity.ok().build()
+    }
 
     @PatchMapping("/rooms/{roomId}/status")
     fun togglePotStatus(

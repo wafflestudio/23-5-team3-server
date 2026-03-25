@@ -304,7 +304,7 @@ class PotService (
         chatBotService.sendKickMsg(potId, targetUserName)
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     fun generateKakaoDeepLink(
         potId: Long,
         userId: Long
@@ -314,26 +314,29 @@ class PotService (
         // 방장이 아니면 딥링크를 만들 수 없다
         if (pot.ownerId != userId) throw KakaoDeepLinkNotOwnerException()
 
-        return try {
-            val start = landmarkRepository.findByIdOrNull(pot.departureId) ?: throw RegionNotFoundException()
-            val end = landmarkRepository.findByIdOrNull(pot.destinationId) ?: throw RegionNotFoundException()
+        val start = landmarkRepository.findByIdOrNull(pot.departureId) ?: throw RegionNotFoundException()
+        val end = landmarkRepository.findByIdOrNull(pot.destinationId) ?: throw RegionNotFoundException()
 
-            val deepLink = LandmarkDto.generateKakaoLink(
-                origin = LandmarkDto.from(start),
-                dest = LandmarkDto.from(end)
-            )
+        return LandmarkDto.generateKakaoLink(
+            origin = LandmarkDto.from(start),
+            dest = LandmarkDto.from(end)
+        )
+    }
 
-            pot.kakaoCallStatus = KakaoCallStatus.SUCCESS
-            pot.kakaoCallAt = LocalDateTime.now()
-            pot.kakaoCallError = null
+    @Transactional
+    fun trackKakaoDeepLinkAttempt(
+        potId: Long,
+        userId: Long,
+        success: Boolean,
+        error: String?
+    ) {
+        val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
 
-            deepLink
-        } catch (e: Exception) {
-            pot.kakaoCallStatus = KakaoCallStatus.FAILED
-            pot.kakaoCallAt = LocalDateTime.now()
-            pot.kakaoCallError = e.message?.take(500) ?: e::class.simpleName
-            throw e
-        }
+        if (pot.ownerId != userId) throw KakaoDeepLinkNotOwnerException()
+
+        pot.kakaoCallStatus = if (success) KakaoCallStatus.SUCCESS else KakaoCallStatus.FAILED
+        pot.kakaoCallAt = LocalDateTime.now()
+        pot.kakaoCallError = if (success) null else error?.take(500)
     }
 
     @Transactional
