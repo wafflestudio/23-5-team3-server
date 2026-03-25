@@ -142,6 +142,23 @@ interface PotRepository : JpaRepository<Pots, Long> {
     fun countByStatus(status: PotStatus): Long
     fun countByCreatedAtBetween(start: Instant, end: Instant): Long
 
+    @Query(
+        """
+        SELECT p
+        FROM Pots p
+        WHERE (
+            :status = 'all'
+            OR (:status = 'open' AND p.status IN ('RECRUITING', 'SUCCESS'))
+            OR (:status = 'closed' AND p.status = 'EXPIRED')
+        )
+        ORDER BY p.createdAt DESC
+        """
+    )
+    fun searchAdminPots(
+        @Param("status") status: String,
+        pageable: Pageable
+    ): Page<Pots>
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Pots p SET p.status = 'EXPIRED' WHERE p.id IN :potIds")
     fun updateStatusToExpiredByIds(@Param("potIds") potIds: List<Long>)

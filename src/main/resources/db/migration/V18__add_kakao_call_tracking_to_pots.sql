@@ -1,0 +1,4 @@
+ALTER TABLE pots
+    ADD COLUMN kakao_call_status VARCHAR(20) NOT NULL DEFAULT 'NOT_CALLED',
+    ADD COLUMN kakao_call_at DATETIME NULL,
+    ADD COLUMN kakao_call_error VARCHAR(500) NULL;

@@ -304,7 +304,7 @@ class PotService (
         chatBotService.sendKickMsg(potId, targetUserName)
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     fun generateKakaoDeepLink(
         potId: Long,
         userId: Long
@@ -312,15 +312,28 @@ class PotService (
         val pot = potRepository.findByIdOrNull(potId) ?: throw PotNotFoundException()
 
         // 방장이 아니면 딥링크를 만들 수 없다
-        if(pot.ownerId != userId) throw KakaoDeepLinkNotOwnerException()
+        if (pot.ownerId != userId) throw KakaoDeepLinkNotOwnerException()
 
-        val start = landmarkRepository.findByIdOrNull(pot.departureId) ?: throw RegionNotFoundException()
-        val end = landmarkRepository.findByIdOrNull(pot.destinationId) ?: throw RegionNotFoundException()
+        return try {
+            val start = landmarkRepository.findByIdOrNull(pot.departureId) ?: throw RegionNotFoundException()
+            val end = landmarkRepository.findByIdOrNull(pot.destinationId) ?: throw RegionNotFoundException()
 
-        return LandmarkDto.generateKakaoLink(
-            origin = LandmarkDto.from(start),
-            dest = LandmarkDto.from(end)
-        )
+            val deepLink = LandmarkDto.generateKakaoLink(
+                origin = LandmarkDto.from(start),
+                dest = LandmarkDto.from(end)
+            )
+
+            pot.kakaoCallStatus = KakaoCallStatus.SUCCESS
+            pot.kakaoCallAt = LocalDateTime.now()
+            pot.kakaoCallError = null
+
+            deepLink
+        } catch (e: Exception) {
+            pot.kakaoCallStatus = KakaoCallStatus.FAILED
+            pot.kakaoCallAt = LocalDateTime.now()
+            pot.kakaoCallError = e.message?.take(500) ?: e::class.simpleName
+            throw e
+        }
     }
 
     @Transactional
