@@ -5,12 +5,29 @@ import com.snuxi.chat.repository.ChatMessageRepository
 import com.snuxi.chat.service.ChatBotService
 import com.snuxi.participant.entity.Participants
 import com.snuxi.participant.repository.ParticipantRepository
-import com.snuxi.pot.*
+import com.snuxi.pot.AlreadyJoinedThisPotException
+import com.snuxi.pot.CannotKickSelfException
+import com.snuxi.pot.InvalidCountException
+import com.snuxi.pot.KakaoCallStatus
+import com.snuxi.pot.KakaoDeepLinkNotOwnerException
+import com.snuxi.pot.MaxPotLimitException
+import com.snuxi.pot.MinMaxReversedException
+import com.snuxi.pot.NotParticipatingException
+import com.snuxi.pot.NotPotOwnerException
+import com.snuxi.pot.PastDepartureTimeException
+import com.snuxi.pot.PotFullException
+import com.snuxi.pot.PotNotFoundException
+import com.snuxi.pot.PotStatus
+import com.snuxi.pot.RegionNotFoundException
+import com.snuxi.pot.SuspendedUserException
+import com.snuxi.pot.TemporarilyNotJoinPotException
+import com.snuxi.pot.TemporarilyNotLeavePotException
 import com.snuxi.pot.dto.CreatePotResponse
 import com.snuxi.pot.dto.PotDto
 import com.snuxi.pot.dto.core.LandmarkDto
 import com.snuxi.pot.dto.response.PotParticipantResponse
 import com.snuxi.pot.entity.Pots
+import com.snuxi.pot.repository.LandmarkPairFareRepository
 import com.snuxi.pot.repository.LandmarkRepository
 import com.snuxi.pot.repository.PotRepository
 import com.snuxi.user.UserNotFoundException
@@ -31,7 +48,8 @@ class PotService (
     private val pushService: PushService,
     private val chatMessageRepository: ChatMessageRepository,
     private val chatBotService: ChatBotService,
-    private val landmarkRepository: LandmarkRepository
+    private val landmarkRepository: LandmarkRepository,
+    private val landmarkPairFareRepository: LandmarkPairFareRepository
 ) {
     @Transactional
     fun createPot(
@@ -51,6 +69,12 @@ class PotService (
         if(departureTime.isBefore(LocalDateTime.now())) throw PastDepartureTimeException()
         if(participantRepository.countByUserId(userId) >= 3) throw MaxPotLimitException()
 
+        val baseFare = landmarkPairFareRepository
+            .findByDepartureIdAndDestinationId(departureId, destinationId)
+            ?.estimatedFare
+            ?: 0
+        val estimatedFee = applyTimeSurcharge(baseFare, departureTime)
+
         val save = potRepository.save(
             Pots(
                 ownerId = userId,
@@ -60,7 +84,7 @@ class PotService (
                 minCapacity = minCapacity,
                 maxCapacity = maxCapacity,
                 currentCount = 1,
-                estimatedFee = 0,
+                estimatedFee = estimatedFee,
                 status = PotStatus.RECRUITING
             )
         )
@@ -367,5 +391,22 @@ class PotService (
             val isOwner = (user.id == pot.ownerId)
             PotParticipantResponse.from(user, isOwner)
         }
+    }
+
+    private fun applyTimeSurcharge(baseFare: Int, departureTime: LocalDateTime): Int {
+        if (baseFare <= 0) return 0
+
+        val surchargeRate = when (departureTime.hour) {
+            22, 2, 3 -> 0.20
+            23, 0, 1 -> 0.40
+            else -> 0.0
+        }
+
+        val adjusted = baseFare * (1 + surchargeRate)
+        return roundToNearestTen(adjusted)
+    }
+
+    private fun roundToNearestTen(amount: Double): Int {
+        return (kotlin.math.round(amount / 10.0) * 10).toInt()
     }
 }
