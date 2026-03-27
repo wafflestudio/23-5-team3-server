@@ -7,6 +7,7 @@ import com.snuxi.participant.entity.Participants
 import com.snuxi.participant.repository.ParticipantRepository
 import com.snuxi.pot.AlreadyJoinedThisPotException
 import com.snuxi.pot.CannotKickSelfException
+import com.snuxi.pot.FareNotFoundException
 import com.snuxi.pot.InvalidCountException
 import com.snuxi.pot.KakaoCallStatus
 import com.snuxi.pot.KakaoDeepLinkNotOwnerException
@@ -72,7 +73,7 @@ class PotService (
         val baseFare = landmarkPairFareRepository
             .findByDepartureIdAndDestinationId(departureId, destinationId)
             ?.estimatedFare
-            ?: 0
+            ?: throw FareNotFoundException()
         val estimatedFee = applyTimeSurcharge(baseFare, departureTime)
 
         val save = potRepository.save(
