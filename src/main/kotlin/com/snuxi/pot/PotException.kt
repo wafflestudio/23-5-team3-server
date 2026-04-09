@@ -115,3 +115,10 @@ class PastDepartureTimeException :
         httpStatusCode = HttpStatus.BAD_REQUEST,
         msg = "출발 시간은 현재 시각 이후여야 합니다."
     )
+
+class FareNotFoundException :
+    PotException(
+        errorCode = 1010003404,
+        httpStatusCode = HttpStatus.NOT_FOUND,
+        msg = "해당 경로의 예상 요금 정보를 찾을 수 없습니다."
+    )
